@@ -1,0 +1,22 @@
+{
+  "name": "backend-fusion",
+  "version": "1.0.0",
+  "description": "Backend API that allows the creation, management, and visualization of a galaxy inspired by Star Wars, including planets, star systems, characters, and spaceships.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gervasioartur/backend-fusion.git"
+  },
+  "author": "Gervasio Artur",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gervasioartur/backend-fusion/issues"
+  },
+  "homepage": "https://github.com/gervasioartur/backend-fusion#readme",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
