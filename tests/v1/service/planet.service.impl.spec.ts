@@ -15,9 +15,12 @@ describe('Planet Service', () => {
         sut =  new PlanetServiceImpl(planetRepository)
     })
 
-    it('Should call create planet with correct values', async () => {
-        planetRepository.findByName.mockResolvedValue(null);
+    it('Should call findByName with correct values', async () => {
         const params = planetFactory
+
+        planetRepository.findByName.mockResolvedValue(null);
+        planetRepository.save.mockResolvedValue(params)
+
         await sut.create(params)
         expect(planetRepository.findByName).toHaveBeenCalledWith(params.name)
         expect(planetRepository.findByName).toHaveBeenCalledTimes(1)
@@ -28,4 +31,16 @@ describe('Planet Service', () => {
         const promise = sut.create(planetFactory);
         await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
     })
+
+    it('Should call save with correct values', async () => {
+        const params = planetFactory
+
+        planetRepository.findByName.mockResolvedValue(null);
+        planetRepository.save.mockResolvedValue(params)
+
+        await sut.create(params)
+        expect(planetRepository.save).toHaveBeenCalledWith(params)
+        expect(planetRepository.save).toHaveBeenCalledTimes(1)
+    })
+
 })
