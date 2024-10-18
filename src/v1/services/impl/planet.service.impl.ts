@@ -1,6 +1,6 @@
 import {PlanetService} from "@/v1/services/contract/planet.service";
 import {Planet} from "@/v1/domain/entity/planet";
-import {PlanetRepository} from "@/v1/repository/contract/planet.repository";
+import {PlanetRepository} from "@/v1/persistence/repository/contract/planet.repository";
 import {Errors, UnexpectError} from "@/v1/domain/errors";
 
 export class  PlanetServiceImpl implements PlanetService{

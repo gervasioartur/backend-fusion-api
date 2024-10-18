@@ -1,7 +1,7 @@
 import {planetFactory} from "@/tests/v1/mocks/planet-mocks";
 import { PlanetService } from "@/v1/services/contract/planet.service";
 import {Errors, UnexpectError} from "@/v1/domain/errors";
-import {PlanetRepository} from "@/v1/repository/contract/planet.repository";
+import {PlanetRepository} from "@/v1/persistence/repository/contract/planet.repository";
 import {PlanetServiceImpl} from "@/v1/services/impl/planet.service.impl";
 import { mock,Mock } from 'ts-jest-mocker';
 
