@@ -12,6 +12,5 @@ export class  PlanetServiceImpl implements PlanetService{
         if(savedPlanet != null) throw new Errors('Planet is already registered!')
         const result = await this.planetRepository.save(planet)
         if(result == null) throw new UnexpectError('An unexpected error occurred while trying save planet info.')
-        return Promise.resolve(undefined);
     }
 }
