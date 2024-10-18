@@ -10,6 +10,7 @@ export class  PlanetServiceImpl implements PlanetService{
     async create(planet: Planet): Promise<void> {
         const savedPlanet  = await this.planetRepository.findByName(planet.name);
         if(savedPlanet != null) throw new ConflictError('Planet is already registered!')
+        this.planetRepository.save(planet)
         return Promise.resolve(undefined);
     }
 }
