@@ -33,4 +33,14 @@ describe('PlanetRepositoryImpl', () => {
         expect(planet).toBeNull()
     });
 
+    it('Should save a planet and find it by name', async () => {
+        const planet =  planetFactory
+        await planetRepository.save(planet)
+
+        const savedPlanet = await planetRepository.findByName(planet.name)
+
+        expect(savedPlanet).toBeDefined()
+        expect(savedPlanet?.name).toBe(planet.name)
+        expect(savedPlanet?.id).toBe(planet.id)
+    })
 })
