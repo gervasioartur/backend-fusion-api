@@ -52,4 +52,11 @@ describe('Planet Service', () => {
             new UnexpectError('An unexpected error occurred while trying save planet info.'))
     })
 
+    it('Should save planet info', async () => {
+        const params = planetFactory
+        planetRepository.save.mockResolvedValue(params)
+        const result = await sut.create(params)
+        expect(result).toBeUndefined()
+    })
+
 })
