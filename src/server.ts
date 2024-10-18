@@ -3,6 +3,7 @@
 import app from './app';
 import debugLib from 'debug';
 import http from 'http';
+import {AppDataSource} from "@/v1/persistence/data-source";
 
 const debug = debugLib('backend-fusion:server');
 
@@ -18,11 +19,34 @@ app.set('port', port);
 const server = http.createServer(app);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * Connect to the database.
  */
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+async function startServer() {
+    try {
+        await AppDataSource.initialize();
+        console.log('Data Source has been initialized!');
+
+        /**
+         * Get port from environment and store in Express.
+         */
+        const port = normalizePort(process.env.PORT || '3000');
+        app.set('port', port);
+
+        /**
+         * Create HTTP server.
+         */
+        const server = http.createServer(app);
+
+        /**
+         * Listen on provided port, on all network interfaces.
+         */
+        server.listen(port);
+        server.on('error', onError);
+        server.on('listening', onListening);
+    } catch (error) {
+        console.error('Error during Data Source initialization:', error);
+    }
+}
 
 /**
  * Normalize a port into a number, string, or false.
