@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import * as path from "node:path";
 
 // Importing routes
-import indexRouter from './routes/index'
+import v1Routes from './v1/routes'
 
 // Configuring express
 const app = express()
@@ -15,6 +15,6 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Configuring routes
-app.use('/', indexRouter)
+app.use('/v1/api',v1Routes)
 
 export default app;
