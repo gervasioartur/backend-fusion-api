@@ -4,7 +4,7 @@
   "description": "Backend API that allows the creation, management, and visualization of a galaxy inspired by Star Wars, including planets, star systems, characters, and spaceships.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint 'src/**/*.ts'",
+    "lint": "eslint '*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
     "clean": "rimraf dist",
     "build": "npm run clean && babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
