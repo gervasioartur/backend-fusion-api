@@ -54,6 +54,24 @@ describe('PlanetController', () => {
     expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
   });
 
+  it('should return 400 if terrain is empty or null', async () => {
+    const requestParams = createPlanetRequestFactory();
+    requestParams.terrain = "";
+
+    const app = createApp();
+    const response = await request(app)
+      .post('/planets')
+      .send(requestParams)
+      .expect(400);
+
+    expect(response.body).toEqual({
+      status: 400,
+      message: "Validation Error",
+      body: ["Terrain is required"]
+    });
+    expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
+  });
+
   it('should create a new planet and return status 201', async () => {
     const requestParams = createPlanetRequestFactory();
     const planet = createPlanetFromDtoFactory(requestParams);
