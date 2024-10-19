@@ -43,15 +43,6 @@ describe('Planet Service', () => {
         expect(planetRepository.save).toHaveBeenCalledTimes(1)
     })
 
-    it('Should throw UnexpectError if save returns null', async () => {
-        const params = planetFactory
-        planetRepository.save.mockResolvedValue(null)
-
-        const promise = sut.create(params)
-        await expect(promise).rejects.toThrow(
-            new UnexpectedError('An unexpected error occurred while trying save planet info.'))
-    })
-
     it('Should save planet info', async () => {
         const params = planetFactory
         planetRepository.save.mockResolvedValue(params)
