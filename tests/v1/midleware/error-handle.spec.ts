@@ -1,4 +1,4 @@
-import { ConflictError, NotFoundError, UnexpectError } from '@/v1/domain/errors';
+import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { Request, Response, NextFunction } from 'express';
 import { errorHandler } from '@/v1/middleware/error-handler';
 
@@ -41,7 +41,7 @@ describe('basicTest middleware', () => {
   });
 
   it('should handle UnexpectError and return 500 status', () => {
-    const unexpectError = new UnexpectError('Unexpected error occurred');
+    const unexpectError = new UnexpectedError('Unexpected error occurred');
     errorHandler(unexpectError, req as Request, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500);

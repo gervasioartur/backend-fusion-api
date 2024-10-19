@@ -4,7 +4,7 @@ export class ConflictError extends Error {
     }
 }
 
-export class  UnexpectError extends Error {
+export class UnexpectedError extends Error {
     constructor(message: string) {
         super(message);
     }
