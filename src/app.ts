@@ -5,6 +5,7 @@ import * as path from "node:path";
 
 // Importing routes
 import v1Routes from './v1/routes'
+import { errorHandler } from '@/v1/api/midleware/errorHandler';
 
 // Configuring express
 const app = express()
@@ -16,5 +17,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // Configuring routes
 app.use('/v1/api',v1Routes)
+
+// Configuring errorHandler
+app.use(errorHandler)
 
 export default app;
