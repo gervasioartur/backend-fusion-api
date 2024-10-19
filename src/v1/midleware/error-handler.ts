@@ -12,11 +12,11 @@ export const errorHandler = (error: any, req: Request,res: Response, next: NextF
       break;
     case error instanceof UnexpectError:
       statusCode = 500;
-      message = error.message
+      message = 'An unexpected error occurred'
       break;
     default:
       statusCode =  500;
-      message = 'Internal server Error'
+      message = 'An unexpected error occurred'
   }
 
   res.status(statusCode).json({message})
