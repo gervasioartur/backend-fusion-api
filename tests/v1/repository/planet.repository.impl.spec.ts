@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
-import { PlanetRepositoryImpl } from '../../../src/v1/persistence/repository/impl/planet.repository.impl';
-import { Planet } from '../../../src/v1/domain/entity/planet';
-import { da } from '@faker-js/faker';
+import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
+import { Planet } from '@/v1/domain/entity/planet';
 import { planetFactory } from '../mocks/planet-mocks';
 
 describe('PlanetRepositoryImpl', () => {

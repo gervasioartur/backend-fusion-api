@@ -1,10 +1,15 @@
 import {NextFunction, Request, Response, Router} from "express";
+import { makePlanetController } from '@/v1/api/factories/controller-factory';
 
 const router = Router()
+const planetController = makePlanetController()
 
-// Home URL
+// Home ROUTE
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Hello world version 1')
 });
+
+// Planet Routes
+router.post('/planets', planetController.create)
 
 export  default  router

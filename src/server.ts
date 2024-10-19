@@ -1,9 +1,9 @@
-#!/usr/bin/env node
+import 'reflect-metadata';
 
 import app from './app';
 import debugLib from 'debug';
 import http from 'http';
-import {AppDataSource} from "@/v1/persistence/data-source";
+import { dataSource } from './v1/persistence/data-source';
 
 const debug = debugLib('backend-fusion:server');
 
@@ -19,23 +19,13 @@ app.set('port', port);
 const server = http.createServer(app);
 
 /**
- * Connect to the database.
+ * Connect to the database and start the server.
  */
 async function startServer() {
     try {
-        await AppDataSource.initialize();
-        console.log('Data Source has been initialized!');
-
-        /**
-         * Get port from environment and store in Express.
-         */
-        const port = normalizePort(process.env.PORT || '3000');
-        app.set('port', port);
-
-        /**
-         * Create HTTP server.
-         */
-        const server = http.createServer(app);
+        console.log('Initializing database connection...');
+        await dataSource.initialize();
+        console.log('Data Source has been initialized successfully!');
 
         /**
          * Listen on provided port, on all network interfaces.
@@ -43,8 +33,10 @@ async function startServer() {
         server.listen(port);
         server.on('error', onError);
         server.on('listening', onListening);
+        console.log('Server running on port: ' + port);
     } catch (error) {
         console.error('Error during Data Source initialization:', error);
+        process.exit(1);  // Exit process on failure
     }
 }
 
@@ -55,15 +47,11 @@ function normalizePort(val: string): number | string | false {
     const port = parseInt(val, 10);
 
     if (isNaN(port)) {
-        // named pipe
-        return val;
+        return val; // Named pipe
     }
-
     if (port >= 0) {
-        // port number
-        return port;
+        return port; // Port number
     }
-
     return false;
 }
 
@@ -77,7 +65,6 @@ function onError(error: NodeJS.ErrnoException) {
 
     const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
-    // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
             console.error(bind + ' requires elevated privileges');
@@ -100,3 +87,21 @@ function onListening() {
     const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
     debug('Listening on ' + bind);
 }
+
+/**
+ * Capture unhandled promise rejections and exceptions
+ */
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+
+/**
+ * Start the server
+ */
+startServer();

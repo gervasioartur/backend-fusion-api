@@ -1,9 +1,9 @@
-import {planetFactory} from "@/tests/v1/mocks/planet-mocks";
-import { PlanetService } from "@/v1/services/contract/planet.service";
-import {Errors, UnexpectError} from "@/v1/domain/errors";
-import {PlanetRepository} from "@/v1/persistence/repository/contract/planet.repository";
-import {PlanetServiceImpl} from "@/v1/services/impl/planet.service.impl";
 import { mock,Mock } from 'ts-jest-mocker';
+import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
+import { PlanetServiceImpl } from '@/v1/services/impl/planet.service.impl';
+import { planetFactory } from '../mocks/planet-mocks';
+import { ConflictError, UnexpectError } from '@/v1/domain/errors';
+import { PlanetService } from '@/v1/services/contract/planet.service';
 
 
 describe('Planet Service', () => {
@@ -28,10 +28,10 @@ describe('Planet Service', () => {
         expect(planetRepository.findByName).toHaveBeenCalledTimes(1)
     })
 
-    it('Should throw Errors if the planet is already registered', async () => {
+    it('Should throw ConflictError if the planet is already registered', async () => {
         planetRepository.findByName.mockResolvedValue(planetFactory);
         const promise = sut.create(planetFactory);
-        await  expect(promise).rejects.toThrow(new Errors("Planet is already registered!"))
+        await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
     })
 
     it('Should call save with correct values', async () => {

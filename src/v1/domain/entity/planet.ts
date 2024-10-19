@@ -5,16 +5,16 @@ export class Planet {
     @PrimaryGeneratedColumn("uuid")
     public id!: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     public name: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     public climate: string;
 
-    @Column()
+    @Column({type: 'varchar'})
     public terrain: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'int', nullable: true })
     public population: number;
 
     constructor(name: string, climate: string, terrain: string, population?: number) {
