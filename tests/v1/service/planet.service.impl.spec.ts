@@ -1,7 +1,7 @@
 import { mock,Mock } from 'ts-jest-mocker';
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
 import { planetFactory } from '../mocks/planet-mocks';
-import { ConflictError, UnexpectError } from '@/v1/domain/errors';
+import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
 
@@ -49,7 +49,7 @@ describe('Planet Service', () => {
 
         const promise = sut.create(params)
         await expect(promise).rejects.toThrow(
-            new UnexpectError('An unexpected error occurred while trying save planet info.'))
+            new UnexpectedError('An unexpected error occurred while trying save planet info.'))
     })
 
     it('Should save planet info', async () => {

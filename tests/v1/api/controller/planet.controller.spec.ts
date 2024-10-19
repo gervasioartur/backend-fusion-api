@@ -1,10 +1,31 @@
 import request from 'supertest';
 import { createPlanetFromDtoFactory, createPlanetRequestFactory } from '@/tests/v1/mocks/planet-mocks';
-import { ConflictError } from '@/v1/domain/errors';
+import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
 import appMock from '@/tests/v1/mocks/app-mock';
 
 describe('PlanetController', () => {
+  it('Should return 500 if service throws UnexpectError', async () => {
+    const requestParams = createPlanetRequestFactory();
+    const planet = createPlanetFromDtoFactory(requestParams);
+
+    (mockPlanetService.create as jest.Mock).mockRejectedValue(new UnexpectedError('An unexpected error occurred while trying save planet info.'));
+
+    const response = await request(appMock)
+      .post('/v1/api/planets')
+      .send(requestParams)
+      .expect(500);
+
+    expect(response.body).toEqual({
+      status: 500,
+      message: "UnexpectedError",
+      body: "An unexpected error occurred while trying save planet info."
+    });
+
+    expect(mockPlanetService.create).toHaveBeenCalledWith(planet);
+    expect(mockPlanetService.create).toHaveBeenCalledTimes(1)
+  })
+
   it('should return 409 if service throws ConflictError', async () => {
     const requestParams = createPlanetRequestFactory();
 
