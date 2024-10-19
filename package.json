@@ -66,6 +66,7 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^4.21.1",
+    "express-async-errors": "^3.1.1",
     "express-validator": "^7.2.0",
     "http": "^0.0.1-security",
     "morgan": "^1.10.0",
@@ -78,7 +79,7 @@
     "typeorm": "^0.3.20"
   },
   "lint-staged": {
-    "src/**/*.ts": [
+    "*.ts": [
       "eslint --fix",
       "prettier --write"
     ]

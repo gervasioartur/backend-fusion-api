@@ -1,37 +1,41 @@
 import request from 'supertest';
-import express from 'express';
 import { createPlanetFromDtoFactory, createPlanetRequestFactory } from '@/tests/v1/mocks/planet-mocks';
-import { PlanetController } from '@/v1/api/controllers/planet.controller';
-import { PlanetService } from '@/v1/service/contract/planet.service';
-import { createPlanetValidator } from '@/v1/api/validators';
-
-const mockPlanetService = { create: jest.fn() } as unknown as PlanetService;
-
-const createApp = () => {
-  const app = express();
-  app.use(express.json());
-
-  const planetController = new PlanetController(mockPlanetService);
-  app.post('/planets',createPlanetValidator, planetController.create);
-
-  return app;
-};
+import { ConflictError } from '@/v1/domain/errors';
+import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
+import appMock from '@/tests/v1/mocks/app-mock';
 
 describe('PlanetController', () => {
+  it('should return 409 if service throws ConflictError', async () => {
+    const requestParams = createPlanetRequestFactory();
+
+    (mockPlanetService.create as jest.Mock).mockRejectedValue(new ConflictError('Planet is already registered!'));
+
+    const response = await request(appMock)
+      .post('/v1/api/planets')
+      .send(requestParams)
+      .expect(409);
+
+    expect(response.body).toEqual({
+      status: 409,
+      message: "ConflictError",
+      body: "Planet is already registered!"
+    });
+    expect(mockPlanetService.create).toHaveBeenCalledTimes(1)
+  });
+
   it('should return 400 if name is empty or null', async () => {
     const requestParams = createPlanetRequestFactory();
     requestParams.name = "";
 
-    const app = createApp();
-    const response = await request(app)
-      .post('/planets')
+    const response = await request(appMock)
+      .post('/v1/api/planets')
       .send(requestParams)
       .expect(400);
 
     expect(response.body).toEqual({
       status: 400,
-      message: "Validation Error",
-      body: ["Name is required"]
+      message: "BusinessError",
+      body: "Name is required"
     });
     expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
   });
@@ -40,16 +44,15 @@ describe('PlanetController', () => {
     const requestParams = createPlanetRequestFactory();
     requestParams.climate = "";
 
-    const app = createApp();
-    const response = await request(app)
-      .post('/planets')
+    const response = await request(appMock)
+      .post('/v1/api/planets')
       .send(requestParams)
       .expect(400);
 
     expect(response.body).toEqual({
       status: 400,
-      message: "Validation Error",
-      body: ["Climate is required"]
+      message: "BusinessError",
+      body: "Climate is required"
     });
     expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
   });
@@ -58,16 +61,32 @@ describe('PlanetController', () => {
     const requestParams = createPlanetRequestFactory();
     requestParams.terrain = "";
 
-    const app = createApp();
-    const response = await request(app)
-      .post('/planets')
+    const response = await request(appMock)
+      .post('/v1/api/planets')
       .send(requestParams)
       .expect(400);
 
     expect(response.body).toEqual({
       status: 400,
-      message: "Validation Error",
-      body: ["Terrain is required"]
+      message: "BusinessError",
+      body: "Terrain is required"
+    });
+    expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
+  });
+
+  it('should return 400 if population is negative ', async () => {
+    const requestParams = createPlanetRequestFactory();
+    requestParams.population = -1;
+
+    const response = await request(appMock)
+      .post('/v1/api/planets')
+      .send(requestParams)
+      .expect(400);
+
+    expect(response.body).toEqual({
+      status: 400,
+      message: "BusinessError",
+      body: "Population must be a non-negative integer"
     });
     expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
   });
@@ -78,9 +97,8 @@ describe('PlanetController', () => {
 
     (mockPlanetService.create as jest.Mock).mockResolvedValue(undefined);
 
-    const app = createApp();
-    const response = await request(app)
-      .post('/planets')
+    const response = await request(appMock)
+      .post('/v1/api/planets')
       .send(requestParams)
       .expect(201);
 

@@ -1,7 +1,7 @@
 export type response = {
   status: number
   message: string
-  body?: object
+  body?: any
 }
 
 export type createPlanetRequest = {
