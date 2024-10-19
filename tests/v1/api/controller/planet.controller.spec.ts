@@ -22,8 +22,6 @@ describe('PlanetController', () => {
     const requestParams = createPlanetRequestFactory();
     requestParams.name = "";
 
-    (mockPlanetService.create as jest.Mock).mockResolvedValue(undefined);
-
     const app = createApp();
     const response = await request(app)
       .post('/planets')
@@ -34,6 +32,24 @@ describe('PlanetController', () => {
       status: 400,
       message: "Validation Error",
       body: ["Name is required"]
+    });
+    expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
+  });
+
+  it('should return 400 if climate is empty or null', async () => {
+    const requestParams = createPlanetRequestFactory();
+    requestParams.climate = "";
+
+    const app = createApp();
+    const response = await request(app)
+      .post('/planets')
+      .send(requestParams)
+      .expect(400);
+
+    expect(response.body).toEqual({
+      status: 400,
+      message: "Validation Error",
+      body: ["Climate is required"]
     });
     expect(mockPlanetService.create).toHaveBeenCalledTimes(0)
   });
