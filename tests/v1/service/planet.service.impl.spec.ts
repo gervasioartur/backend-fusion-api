@@ -1,9 +1,9 @@
 import { mock,Mock } from 'ts-jest-mocker';
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
-import { PlanetServiceImpl } from '@/v1/services/impl/planet.service.impl';
 import { planetFactory } from '../mocks/planet-mocks';
 import { ConflictError, UnexpectError } from '@/v1/domain/errors';
-import { PlanetService } from '@/v1/services/contract/planet.service';
+import { PlanetService } from '@/v1/service/contract/planet.service';
+import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
 
 
 describe('Planet Service', () => {
