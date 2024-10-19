@@ -5,3 +5,4 @@ dist
 *.iml
 backend-fusion.iml
 .env
+coverage
