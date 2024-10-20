@@ -4,7 +4,7 @@ import {
   createPlanetRequestFactory,
   planetsWithIdFactory,
 } from '@/tests/v1/mocks/planet-mocks';
-import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
+import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
 import appMock from '@/tests/v1/mocks/app-mock';
 
@@ -173,6 +173,28 @@ describe('PlanetController', () => {
 
       expect(mockPlanetService.readAll).toHaveBeenCalledTimes(1)
     });
+  })
+
+  describe('read by id', () => {
+    it('Should return 404 if service throws NotFoundError on read by id', async () => {
+      const id = 'any_id';
+      const error = new NotFoundError();
+
+      (mockPlanetService.readById as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+id)
+        .send()
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: 'NotFoundError',
+        body: error.message
+      });
+      expect(mockPlanetService.readById).toHaveBeenCalledWith(id);
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
   })
 });
 

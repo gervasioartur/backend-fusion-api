@@ -5,7 +5,8 @@ import { Router } from 'express';
 
 export const mockPlanetService =
   { create: jest.fn(),
-    readAll: jest.fn()
+    readAll: jest.fn(),
+    readById: jest.fn()
   } as unknown as jest.Mocked<PlanetService>;
 
 const routerMock = Router()
@@ -14,5 +15,6 @@ const planetController = new PlanetController(mockPlanetService);
 // Planet Routes
 routerMock.post('/planets',createPlanetValidator, planetController.create)
 routerMock.get('/planets', planetController.readAll)
+routerMock.get('/planets/:id', planetController.readById)
 
 export  default  routerMock
