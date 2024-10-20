@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
 import { Planet } from '@/v1/domain/entity/planet';
-import { planetsWithNoIdFactory, planetWithIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
+import { planetsWithNoIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
 
 describe('PlanetRepositoryImpl', () => {
     let dataSource: DataSource
