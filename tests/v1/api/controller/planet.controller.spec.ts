@@ -282,6 +282,25 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
 
+
+    it('Should return 400 if name is empty on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.name = ""
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        status: 400,
+        message: "BusinessError",
+        body: 'Name is required'
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
   })
+
 });
 
