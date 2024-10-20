@@ -6,4 +6,8 @@ export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetR
     async findByName(name: string): Promise<Planet | null> {
         return this.findOne({ where: {  name, active: true } });
     }
+
+    findAll(): Promise<Planet[]> {
+        return this.find({where: { active: true }});
+    }
 }
