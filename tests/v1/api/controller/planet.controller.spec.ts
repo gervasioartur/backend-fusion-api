@@ -176,6 +176,26 @@ describe('PlanetController', () => {
   })
 
   describe('read by id', () => {
+    it('Should return 500 if service throws UnexpectError on read by id', async () => {
+      const id = 'any_id';
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.readById as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+id)
+        .send()
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+
     it('Should return 404 if service throws NotFoundError on read by id', async () => {
       const id = 'any_id';
       const error = new NotFoundError();
