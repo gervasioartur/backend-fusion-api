@@ -19,4 +19,8 @@ export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetR
     async updatePlanet(planet: Planet): Promise<void> {
         await this.save(planet)
     }
+
+    async deletePlanet(id: string): Promise<void> {
+        return Promise.resolve(undefined);
+    }
 }
