@@ -34,7 +34,7 @@ describe('PlanetController', () => {
    it('should return 409 if service throws ConflictError on create planet', async () => {
      const requestParams = createPlanetRequestFactory();
 
-     (mockPlanetService.create as jest.Mock).mockRejectedValue(new ConflictError('Planet is already registered!'));
+     (mockPlanetService.create as jest.Mock).mockRejectedValue(new ConflictError('Planet name already taken'));
 
      const response = await request(appMock)
        .post('/v1/api/planets')
@@ -44,7 +44,7 @@ describe('PlanetController', () => {
      expect(response.body).toEqual({
        status: 409,
        message: "ConflictError",
-       body: "Planet is already registered!"
+       body: "Planet name already taken"
      });
      expect(mockPlanetService.create).toHaveBeenCalledTimes(1)
    });

@@ -188,7 +188,7 @@ describe('Planet Service', () => {
             planetRepository.findByName.mockResolvedValue(planet)
 
             const promise = sut.update(planet)
-            await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
+            await  expect(promise).rejects.toThrow(new ConflictError("Planet name already taken"))
         });
 
         it('Should not change planet info if the new information is equal to old info', async () => {

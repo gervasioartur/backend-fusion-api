@@ -35,7 +35,7 @@ export class  PlanetServiceImpl implements PlanetService{
         const savedPlanet = await this.readById(planet.id)
         const isValidName =  await this.planetRepository.findByName(savedPlanet.name)
 
-        if(isValidName != null) throw new ConflictError('Planet is already registered!')
+        if(isValidName != null) throw new ConflictError('Planet name already taken')
 
         savedPlanet.name =  planet.name !== savedPlanet.name && planet.name !== "" ? planet.name : savedPlanet.name
         savedPlanet.climate = planet.climate !== savedPlanet.climate && planet.climate !== "" ? planet.climate : savedPlanet.climate
