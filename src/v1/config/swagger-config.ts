@@ -74,6 +74,37 @@ const paths = {
         '500': { description: 'Server error' },
       },
     },
+    put: {
+      summary: 'Update planet',
+      tags: ['Planets'],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+          description: 'The ID of the planet to retrieve',
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/components/schemas/updatePlanetRequest',
+            },
+          },
+        },
+      },
+      responses: {
+        '200': { description: 'Planet returned successfully' },
+        '404': { description: 'Planet not found' },
+        '500': { description: 'Server error' },
+      },
+    },
   },
 };
 
@@ -89,6 +120,16 @@ const components = {
       required: ['name', 'climate', 'terrain'],
     },
     createPlanetRequest: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'The name of the planet' },
+        climate: { type: 'string', description: 'The climate of the planet' },
+        terrain: { type: 'string', description: 'The terrain of the planet' },
+        population: { type: 'number', description: 'The population of the planet' },
+      },
+      required: ['name', 'climate', 'terrain'],
+    },
+    updatePlanetRequest: {
       type: 'object',
       properties: {
         name: { type: 'string', description: 'The name of the planet' },
