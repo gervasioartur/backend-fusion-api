@@ -24,11 +24,34 @@ export const planetWithIdFactory = ():Planet => {
   return planet
 }
 
+export const planetsWithNoIdFactory = ():Planet[] => {
+  const planetFactoryOne: Planet = {
+    ...planetWithNoIdFactory,
+    name: faker.lorem.word(),
+    active: true,
+  }
+
+  const planetFactoryTwo = {
+    ...planetWithNoIdFactory,
+    name: faker.lorem.word(),
+    active: true,
+  }
+
+  return [planetFactoryOne, planetFactoryTwo]
+}
+
 export const planetsWithIdFactory = ():Planet[] => {
-  const planetFactoryOne = planetWithIdFactory()
-  planetFactoryOne.active = true
-  const planetFactoryTwo = planetWithIdFactory()
-  planetFactoryTwo.active = true
+  const planetFactoryOne: Planet = {
+    ...planetWithIdFactory(),
+    name: faker.lorem.word(),
+    active: true,
+  }
+
+  const planetFactoryTwo = {
+    ...planetWithIdFactory(),
+    name: faker.lorem.word(),
+    active: true,
+  }
   return [planetFactoryOne, planetFactoryTwo]
 }
 
