@@ -154,4 +154,15 @@ describe('Planet Service', () => {
             expect(result).toEqual(planet)
         });
     })
+
+    describe('Update planet', () => {
+        it('Should call findById with correct params on update planet', async () => {
+            const planet = planetWithIdFactory()
+            planetRepository.findById.mockResolvedValue(planet)
+
+            await sut.update(planet)
+            expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+        });
+    })
 })
