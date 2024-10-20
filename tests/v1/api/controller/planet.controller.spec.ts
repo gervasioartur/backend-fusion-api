@@ -2,7 +2,7 @@ import request from 'supertest';
 import {
   createPlanetFromDtoFactory,
   createPlanetRequestFactory,
-  planetsWithIdFactory,
+  planetsWithIdFactory, planetWithIdFactory,
 } from '@/tests/v1/mocks/planet-mocks';
 import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
@@ -193,6 +193,25 @@ describe('PlanetController', () => {
         body: error.message
       });
       expect(mockPlanetService.readById).toHaveBeenCalledWith(id);
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+
+    it('Should return planet if it exists on read by if', async  () => {
+      const planet = planetWithIdFactory();
+
+      (mockPlanetService.readById as jest.Mock).mockResolvedValue(planet);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+planet.id)
+        .send()
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: 'OK',
+        body: planet
+      });
+      expect(mockPlanetService.readById).toHaveBeenCalledWith(planet.id);
       expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
     })
   })
