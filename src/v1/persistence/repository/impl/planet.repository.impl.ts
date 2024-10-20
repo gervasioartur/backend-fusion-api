@@ -12,6 +12,7 @@ export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetR
     }
 
     async findById(id: string): Promise<Planet | null> {
-        return Promise.resolve(null);
+        const planet = await this.findOne({where: {id,  active: true }});
+        return planet ? planet : null
     }
 }
