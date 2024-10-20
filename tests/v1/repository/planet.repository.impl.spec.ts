@@ -62,4 +62,14 @@ describe('PlanetRepositoryImpl', () => {
             expect(planets).toBeDefined()
         });
     })
+
+    describe('FindById', () => {
+        it('Should save planets and find by id', async () => {
+            let toSavePlanet = planetWithNoIdFactory
+            toSavePlanet = await planetRepository.save(toSavePlanet)
+
+            const result = await planetRepository.findById(toSavePlanet.id)
+            expect(result?.id).toBeDefined();
+        });
+    })
 })

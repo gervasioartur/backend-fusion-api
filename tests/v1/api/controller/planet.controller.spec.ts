@@ -2,9 +2,9 @@ import request from 'supertest';
 import {
   createPlanetFromDtoFactory,
   createPlanetRequestFactory,
-  planetsWithIdFactory,
+  planetsWithIdFactory, planetWithIdFactory,
 } from '@/tests/v1/mocks/planet-mocks';
-import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
+import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
 import appMock from '@/tests/v1/mocks/app-mock';
 
@@ -173,6 +173,67 @@ describe('PlanetController', () => {
 
       expect(mockPlanetService.readAll).toHaveBeenCalledTimes(1)
     });
+  })
+
+  describe('read by id', () => {
+    it('Should return 500 if service throws UnexpectError on read by id', async () => {
+      const id = 'any_id';
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.readById as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+id)
+        .send()
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+
+    it('Should return 404 if service throws NotFoundError on read by id', async () => {
+      const id = 'any_id';
+      const error = new NotFoundError();
+
+      (mockPlanetService.readById as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+id)
+        .send()
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: 'NotFoundError',
+        body: error.message
+      });
+      expect(mockPlanetService.readById).toHaveBeenCalledWith(id);
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+
+    it('Should return planet if it exists on read by if', async  () => {
+      const planet = planetWithIdFactory();
+
+      (mockPlanetService.readById as jest.Mock).mockResolvedValue(planet);
+
+      const response = await request(appMock)
+        .get('/v1/api/planets/'+planet.id)
+        .send()
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: 'OK',
+        body: planet
+      });
+      expect(mockPlanetService.readById).toHaveBeenCalledWith(planet.id);
+      expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
   })
 });
 

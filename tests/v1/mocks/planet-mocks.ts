@@ -21,6 +21,7 @@ export const planetWithIdFactory = ():Planet => {
     faker.number.int())
 
   planet.id = faker.database.mongodbObjectId()
+  planet.active =  true
   return planet
 }
 

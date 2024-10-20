@@ -1,7 +1,12 @@
 import { mock,Mock } from 'ts-jest-mocker';
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
-import { planetWithNoIdFactory, planetsWithIdFactory, planetWithIdFromPlanetFactory } from '../mocks/planet-mocks';
-import { ConflictError } from '@/v1/domain/errors';
+import {
+    planetWithNoIdFactory,
+    planetsWithIdFactory,
+    planetWithIdFromPlanetFactory,
+    planetWithIdFactory,
+} from '../mocks/planet-mocks';
+import { ConflictError, NotFoundError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
 import redisClient from '@/v1/config/redis-client';
@@ -111,6 +116,39 @@ describe('Planet Service', () => {
             expect(planetRepository.findAll).toHaveBeenCalledTimes(1)
             expect(result.length).toBe(planets.length)
             expect(result[0].id).toBe(planets[0].id)
+        });
+    })
+
+    describe('Read planet by id', () => {
+
+        it('Should call findById with correct params on read planet by id', async () => {
+            const id = 'any_id'
+            const planet = planetWithIdFactory()
+
+            planetRepository.findById.mockResolvedValue(planet)
+
+            await sut.readById(id)
+            expect(planetRepository.findById).toHaveBeenCalledWith(id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+        });
+
+        it('Should throw NotFoundError if planet does not exists on read planet by id', async () => {
+            const id = 'any_id'
+
+            planetRepository.findById.mockResolvedValue(null)
+
+            const promise = sut.readById(id)
+            await  expect(promise).rejects.toThrow(new NotFoundError())
+        })
+
+        it('Should return planet if it exists', async () => {
+            const id = 'any_id'
+            const planet = planetWithIdFactory()
+
+            planetRepository.findById.mockResolvedValue(planet)
+
+            const result = await sut.readById(id)
+            expect(result).toEqual(planet)
         });
     })
 })
