@@ -259,6 +259,29 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
       expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
+
+    it('Should return 404 if service throws NotFoundError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new NotFoundError();
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: "NotFoundError",
+        body: error.message
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
+    })
+
   })
 });
 
