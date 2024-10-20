@@ -64,6 +64,10 @@ describe('PlanetRepositoryImpl', () => {
     })
 
     describe('FindById', () => {
+        beforeEach(async () => {
+            await  dataSource.getRepository(Planet).clear()
+        })
+
         it('Should null if planet does not exist on find by id', async () => {
             const id = 'any_id'
             const result = await planetRepository.findById(id)
@@ -76,6 +80,23 @@ describe('PlanetRepositoryImpl', () => {
 
             const result = await planetRepository.findById(toSavePlanet.id)
             expect(result?.id).toBeDefined();
+        });
+    })
+
+    describe('Update', () => {
+        beforeEach(async () => {
+            await  dataSource.getRepository(Planet).clear()
+        })
+
+        it('Should save and update planet', async () => {
+            const savedPlanet = planetWithNoIdFactory
+            await planetRepository.save(savedPlanet)
+
+            const toUpdatePlanet = planetWithNoIdFactory
+            toUpdatePlanet.id = savedPlanet.id
+
+            const result = await planetRepository.updatePlanet(toUpdatePlanet)
+            expect(result).toBeUndefined();
         });
     })
 })
