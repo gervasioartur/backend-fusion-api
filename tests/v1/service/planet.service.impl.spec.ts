@@ -33,6 +33,10 @@ describe('Planet Service', () => {
         memoryCache = {};
     });
 
+    afterAll(async () => {
+        await redisClient.disconnect();
+    });
+
     (redisClient.get as jest.Mock).mockImplementation((key: string) => {
         return memoryCache[key] ? Promise.resolve(memoryCache[key]) : Promise.resolve(null);
     });
@@ -120,7 +124,6 @@ describe('Planet Service', () => {
     })
 
     describe('Read planet by id', () => {
-
         it('Should call findById with correct params on read planet by id', async () => {
             const id = 'any_id'
             const planet = planetWithIdFactory()
