@@ -73,6 +73,12 @@ export class PlanetController {
       planet.id = id
 
       await this.planetService.update(planet)
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message };
+
+      res.status(status).json(response);
     }catch (error){
       next(error)
     }
