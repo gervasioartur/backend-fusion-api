@@ -113,4 +113,16 @@ describe('Planet Service', () => {
             expect(result[0].id).toBe(planets[0].id)
         });
     })
+
+    describe('Read planet by id', () => {
+        it('Should call findById with correct params on read planet by id', async () => {
+            const id = 'any_id'
+
+            planetRepository.findById.mockResolvedValue(null)
+
+            await sut.readById(id)
+            expect(planetRepository.findById).toHaveBeenCalledWith(id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+        });
+    })
 })
