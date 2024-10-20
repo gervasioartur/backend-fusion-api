@@ -29,6 +29,6 @@ export class  PlanetServiceImpl implements PlanetService{
     async readById(id: string): Promise<Planet> {
         const planet = await this.planetRepository.findById(id)
         if (!planet) throw new NotFoundError()
-        return Promise.resolve(planetWithIdFactory());
+        return planet
     }
 }
