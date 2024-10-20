@@ -95,6 +95,7 @@ describe('Planet Service', () => {
             planetRepository.save.mockResolvedValue(savedPlanet)
 
             await sut.create(params)
+            expect(redisClient.del).toHaveBeenCalledTimes(1)
             expect(redisClient.del).toHaveBeenCalledWith('planets')
         })
     })
@@ -121,6 +122,7 @@ describe('Planet Service', () => {
             expect(planetRepository.findAll).toHaveBeenCalledTimes(1)
             expect(result.length).toBe(planets.length)
             expect(result[0].id).toBe(planets[0].id)
+            expect(redisClient.set).toHaveBeenCalledWith('planets', JSON.stringify(planets))
         });
     })
 
@@ -225,6 +227,9 @@ describe('Planet Service', () => {
 
             expect(planetRepository.updatePlanet).toHaveBeenCalledWith(savedPlanet)
             expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
+
+            expect(redisClient.del).toHaveBeenCalledTimes(1)
+            expect(redisClient.del).toHaveBeenCalledWith('planets')
         });
     })
 })
