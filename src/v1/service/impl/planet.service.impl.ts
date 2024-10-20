@@ -45,4 +45,10 @@ export class  PlanetServiceImpl implements PlanetService{
         await this.planetRepository.updatePlanet(savedPlanet)
         await redisClient.del('planets');
     }
+
+    async delete(id: string): Promise<void> {
+        const planet = await this.readById(id)
+        await this.planetRepository.deletePlanet(planet.id)
+        await redisClient.del('planets');
+    }
 }

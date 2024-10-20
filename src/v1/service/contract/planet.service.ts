@@ -5,4 +5,5 @@ export interface  PlanetService {
     readAll(): Promise<Planet[]>
     readById(id: string): Promise<Planet>
     update(planet: Planet): Promise<void>
+    delete(id: string): Promise<void>
 }

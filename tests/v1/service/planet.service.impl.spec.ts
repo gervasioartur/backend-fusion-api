@@ -101,6 +101,10 @@ describe('Planet Service', () => {
     })
 
     describe('Read all Planets', () => {
+        beforeEach(() => {
+            planetRepository.findByName.mockResolvedValue(null);
+        })
+
         it('Should return cached planets if available on read all planets', async () => {
             const cachedPlanets = JSON.stringify(planetsWithIdFactory());
             (redisClient.get as jest.Mock).mockResolvedValue(cachedPlanets);
@@ -127,6 +131,10 @@ describe('Planet Service', () => {
     })
 
     describe('Read planet by id', () => {
+        beforeEach(() => {
+            planetRepository.findByName.mockResolvedValue(null);
+        })
+
         it('Should call findById with correct params on read planet by id', async () => {
             const id = 'any_id'
             const planet = planetWithIdFactory()
@@ -159,6 +167,10 @@ describe('Planet Service', () => {
     })
 
     describe('Update planet', () => {
+        beforeEach(() => {
+            planetRepository.findByName.mockResolvedValue(null);
+        })
+
         it('Should call findById with correct params on update planet', async () => {
             const planet = planetWithIdFactory()
 
@@ -240,6 +252,46 @@ describe('Planet Service', () => {
 
             expect(planetRepository.updatePlanet).toHaveBeenCalledWith(savedPlanet)
             expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
+
+            expect(redisClient.del).toHaveBeenCalledTimes(1)
+            expect(redisClient.del).toHaveBeenCalledWith('planets')
+        });
+    })
+
+    describe('Delete planet', () => {
+        beforeEach(() => {
+            planetRepository.findByName.mockResolvedValue(null);
+        })
+
+        it('Should call findById with correct params', async () => {
+            const planet = planetWithIdFactory();
+            planetRepository.findById.mockResolvedValue(planet)
+            planetRepository.deletePlanet.mockResolvedValue(undefined)
+
+            await sut.delete(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+        });
+
+        it('Should throw NotFoundError if planet does not exists on delete planet', async () => {
+            const planet = planetWithIdFactory();
+            planetRepository.findById.mockResolvedValue(null)
+
+            const promise = sut.delete(planet.id)
+            await expect(promise).rejects.toThrow(new NotFoundError());
+        });
+
+        it('Should call deletePlanet with correct params and deletes planet', async () => {
+            const planet = planetWithIdFactory();
+            planetRepository.findById.mockResolvedValue(planet)
+            planetRepository.deletePlanet.mockResolvedValue(undefined)
+
+            await sut.delete(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+
+            expect(planetRepository.deletePlanet).toHaveBeenCalledWith(planet.id)
+            expect(planetRepository.deletePlanet).toHaveBeenCalledTimes(1)
 
             expect(redisClient.del).toHaveBeenCalledTimes(1)
             expect(redisClient.del).toHaveBeenCalledWith('planets')

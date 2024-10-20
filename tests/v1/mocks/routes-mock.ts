@@ -7,7 +7,8 @@ export const mockPlanetService =
   { create: jest.fn(),
     readAll: jest.fn(),
     readById: jest.fn(),
-    update: jest.fn()
+    update: jest.fn(),
+    delete: jest.fn()
   } as unknown as jest.Mocked<PlanetService>;
 
 const routerMock = Router()
@@ -18,5 +19,7 @@ routerMock.post('/planets',createPlanetValidator, planetController.create)
 routerMock.get('/planets', planetController.readAll)
 routerMock.get('/planets/:id', planetController.readById)
 routerMock.put('/planets/:id', planetController.update);
+routerMock.delete('/planets/:id', planetController.delete);
+
 
 export  default  routerMock

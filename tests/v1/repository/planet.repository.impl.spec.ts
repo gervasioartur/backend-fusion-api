@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
 import { Planet } from '@/v1/domain/entity/planet';
 import { planetsWithNoIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
+import { pl } from '@faker-js/faker';
 
 describe('PlanetRepositoryImpl', () => {
     let dataSource: DataSource
@@ -83,7 +84,7 @@ describe('PlanetRepositoryImpl', () => {
         });
     })
 
-    describe('Update', () => {
+    describe('UpdatePlanet', () => {
         beforeEach(async () => {
             await  dataSource.getRepository(Planet).clear()
         })
@@ -95,8 +96,25 @@ describe('PlanetRepositoryImpl', () => {
             const toUpdatePlanet = planetWithNoIdFactory
             toUpdatePlanet.id = savedPlanet.id
 
-            const result = await planetRepository.updatePlanet(toUpdatePlanet)
-            expect(result).toBeUndefined();
+            await planetRepository.updatePlanet(toUpdatePlanet)
+            const result = await planetRepository.findByName(toUpdatePlanet.name)
+
+            expect(result).toBeDefined();
+            expect(result?.id).toBe(savedPlanet.id)
+        });
+    })
+
+    describe('DeletePlanet', () => {
+        beforeEach(async () => {
+            await  dataSource.getRepository(Planet).clear()
+        })
+
+        it('Should save and delete planet', async () => {
+            const planet = planetWithNoIdFactory
+            await planetRepository.save(planet)
+            await planetRepository.deletePlanet(planet.id)
+            const result = await planetRepository.findById(planet.id)
+            expect(result).toBeNull();
         });
     })
 })

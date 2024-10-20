@@ -377,5 +377,67 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
   })
+
+  describe('delete planet', () => {
+    it('Should return 500 if service throws UnexpectError on delete', async () => {
+      const id = 'any_id'
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.delete as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
+
+    it('Should return 404 if service throws NotFoundError on delete', async () => {
+      const id = 'any_id'
+      const error = new NotFoundError();
+
+      (mockPlanetService.delete as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: "NotFoundError",
+        body: error.message
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
+
+    it('Should return 200 delete success', async () => {
+      const id = 'any_id';
+      (mockPlanetService.delete as jest.Mock).mockResolvedValue(undefined);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: "OK",
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
+  })
 });
 

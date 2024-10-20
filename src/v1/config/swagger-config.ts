@@ -100,9 +100,30 @@ const paths = {
         },
       },
       responses: {
-        '200': { description: 'Planet returned successfully' },
+        '200': { description: 'Planet updated successfully' },
         '404': { description: 'Planet not found' },
         '409': { description: 'Planet name already taken' },
+        '500': { description: 'Server error' },
+      },
+    },
+    delete: {
+      summary: 'Delete planet',
+      tags: ['Planets'],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+          description: 'The ID of the planet to retrieve',
+        },
+      ],
+      responses: {
+        '200': { description: 'Planet deleted successfully' },
+        '404': { description: 'Planet not found' },
         '500': { description: 'Server error' },
       },
     },

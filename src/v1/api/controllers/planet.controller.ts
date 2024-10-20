@@ -83,4 +83,19 @@ export class PlanetController {
       next(error)
     }
   }
+
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } =  req.params
+    try {
+      await this.planetService.delete(id)
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message };
+
+      res.status(status).json(response);
+    }catch (error){
+      next(error)
+    }
+  }
 }
