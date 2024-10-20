@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
 import { Planet } from '@/v1/domain/entity/planet';
-import { planetFactory } from '../mocks/planet-mocks';
+import { planetWithNoIdFactory } from '../mocks/planet-mocks';
 
 describe('PlanetRepositoryImpl', () => {
     let dataSource: DataSource
@@ -28,12 +28,12 @@ describe('PlanetRepositoryImpl', () => {
     });
 
     it('Should return null when planet is not found',async () => {
-        const planet = await planetRepository.findByName(planetFactory.name)
+        const planet = await planetRepository.findByName(planetWithNoIdFactory.name)
         expect(planet).toBeNull()
     });
 
     it('Should save a planet and find it by name', async () => {
-        const planet =  planetFactory
+        const planet =  planetWithNoIdFactory
         planet.active =  true
         await planetRepository.save(planet)
 

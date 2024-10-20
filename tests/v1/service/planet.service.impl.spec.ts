@@ -1,10 +1,14 @@
 import { mock,Mock } from 'ts-jest-mocker';
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
-import { planetFactory } from '../mocks/planet-mocks';
+import { planetWithNoIdFactory, planetsWithIdFactory, planetWithIdFromPlanetFactory } from '../mocks/planet-mocks';
 import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
+import { param } from 'express-validator';
+import redisClient from '@/v1/config/redis-client';
 
+
+jest.mock('@/v1/config/redis-client');
 
 describe('Planet Service', () => {
     let sut: PlanetService
@@ -15,39 +19,79 @@ describe('Planet Service', () => {
         sut =  new PlanetServiceImpl(planetRepository)
     })
 
-    beforeEach(() => {
-        planetRepository.findByName.mockResolvedValue(null);
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('Create Planet', () => {
+        beforeEach(() => {
+            planetRepository.findByName.mockResolvedValue(null);
+        })
+
+        it('Should call findByName with correct values', async () => {
+            const params = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFromPlanetFactory(params)
+
+            planetRepository.save.mockResolvedValue(savedPlanet)
+
+            await sut.create(params)
+            expect(planetRepository.findByName).toHaveBeenCalledWith(params.name)
+            expect(planetRepository.findByName).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should throw ConflictError if the planet is already registered', async () => {
+            const params = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFromPlanetFactory(params)
+            planetRepository.findByName.mockResolvedValue(savedPlanet);
+
+            const promise = sut.create(params);
+            await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
+        })
+
+        it('Should call save with correct values', async () => {
+            const params = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFromPlanetFactory(params)
+
+            planetRepository.save.mockResolvedValue(savedPlanet)
+
+            await sut.create(params)
+            expect(planetRepository.save).toHaveBeenCalledWith(params)
+            expect(planetRepository.save).toHaveBeenCalledTimes(1)
+        })
+
+        it('Should save planet info', async () => {
+            const params = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFromPlanetFactory(params)
+
+            planetRepository.save.mockResolvedValue(savedPlanet)
+
+            const result = await sut.create(params)
+            expect(result).toBeUndefined()
+        })
     })
 
-    it('Should call findByName with correct values', async () => {
-        const params = planetFactory
-        planetRepository.save.mockResolvedValue(params)
+    describe('Read all Planets', () => {
+        it('Should return cached planets if available', async () => {
+            const cachedPlanets = JSON.stringify(planetsWithIdFactory());
+            (redisClient.get as jest.Mock).mockResolvedValue(cachedPlanets);
 
-        await sut.create(params)
-        expect(planetRepository.findByName).toHaveBeenCalledWith(params.name)
-        expect(planetRepository.findByName).toHaveBeenCalledTimes(1)
+            const result = await sut.readAll()
+
+            expect(redisClient.get).toHaveBeenCalledTimes(1)
+            expect(redisClient.get).toHaveBeenCalledWith('planets')
+            expect(result).toEqual(JSON.parse(cachedPlanets))
+        });
+
+        it('Should return planets from database if cache is empty', async () => {
+            const planets = planetsWithIdFactory();
+
+            (redisClient.get as jest.Mock).mockResolvedValue(null);
+            planetRepository.findAll.mockResolvedValue(planets)
+
+            const result = await sut.readAll()
+            expect(planetRepository.findAll).toHaveBeenCalledTimes(1)
+            expect(result.length).toBe(planets.length)
+            expect(result[0].id).toBe(planets[0].id)
+        });
     })
-
-    it('Should throw ConflictError if the planet is already registered', async () => {
-        planetRepository.findByName.mockResolvedValue(planetFactory);
-        const promise = sut.create(planetFactory);
-        await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
-    })
-
-    it('Should call save with correct values', async () => {
-        const params = planetFactory
-        planetRepository.save.mockResolvedValue(params)
-
-        await sut.create(params)
-        expect(planetRepository.save).toHaveBeenCalledWith(params)
-        expect(planetRepository.save).toHaveBeenCalledTimes(1)
-    })
-
-    it('Should save planet info', async () => {
-        const params = planetFactory
-        planetRepository.save.mockResolvedValue(params)
-        const result = await sut.create(params)
-        expect(result).toBeUndefined()
-    })
-
 })
