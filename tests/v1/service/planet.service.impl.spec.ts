@@ -178,19 +178,17 @@ describe('Planet Service', () => {
             await  expect(promise).rejects.toThrow(new NotFoundError())
         });
 
-        it('Should call update with correct params and update planet', async () => {
-            const toUpdatePlanet = planetWithNoIdFactory
-            const savedPlanet = planetWithIdFactory()
-            toUpdatePlanet.id = savedPlanet.id
+        it('Should not change planet info if the new information is equal to old info', async () => {
+            const planet = planetWithIdFactory()
 
-            planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.findById.mockResolvedValue(planet)
             planetRepository.updatePlanet.mockResolvedValue(undefined)
 
-            await sut.update(toUpdatePlanet)
-            expect(planetRepository.findById).toHaveBeenCalledWith(toUpdatePlanet.id)
+            await sut.update(planet)
+            expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
             expect(planetRepository.findById).toHaveBeenCalledTimes(1)
 
-            expect(planetRepository.updatePlanet).toHaveBeenCalledWith(toUpdatePlanet)
+            expect(planetRepository.updatePlanet).toHaveBeenCalledWith(planet)
             expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
         });
     })
