@@ -30,4 +30,9 @@ export class  PlanetServiceImpl implements PlanetService{
         if (!planet) throw new NotFoundError()
         return planet
     }
+
+    async update(planet: Planet): Promise<void> {
+        await this.readById(planet.id)
+        return Promise.resolve(undefined);
+    }
 }
