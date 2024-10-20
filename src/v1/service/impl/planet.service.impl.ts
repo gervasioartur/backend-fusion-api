@@ -1,6 +1,6 @@
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
 import { Planet } from '@/v1/domain/entity/planet';
-import { ConflictError } from '@/v1/domain/errors';
+import { ConflictError, NotFoundError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import redisClient from '@/v1/config/redis-client';
 import { planetsWithIdFactory, planetWithIdFactory } from '@/tests/v1/mocks/planet-mocks';
@@ -27,7 +27,8 @@ export class  PlanetServiceImpl implements PlanetService{
     }
 
     async readById(id: string): Promise<Planet> {
-        await this.planetRepository.findById(id)
+        const planet = await this.planetRepository.findById(id)
+        if (!planet) throw new NotFoundError()
         return Promise.resolve(planetWithIdFactory());
     }
 }
