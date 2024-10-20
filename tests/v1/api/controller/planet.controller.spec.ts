@@ -399,6 +399,27 @@ describe('PlanetController', () => {
       expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
       expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
     })
+
+    it('Should return 404 if service throws NotFoundError on delete', async () => {
+      const id = 'any_id'
+      const error = new NotFoundError();
+
+      (mockPlanetService.delete as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: "NotFoundError",
+        body: error.message
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
   })
 });
 
