@@ -255,5 +255,12 @@ describe('Planet Service', () => {
             expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
             expect(planetRepository.findById).toHaveBeenCalledTimes(1)
         });
+
+        it('Should throw NotFoundError if planet does not exists on delete planet', async () => {
+            const planet = planetWithIdFactory();
+            planetRepository.findById.mockResolvedValue(null)
+            const promise = sut.delete(planet.id)
+           await expect(promise).rejects.toThrow(new NotFoundError());
+        });
     })
 })
