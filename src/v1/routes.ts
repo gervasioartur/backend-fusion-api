@@ -8,5 +8,6 @@ const planetController = makePlanetController()
 // Planet Routes
 router.post('/planets',createPlanetValidator, planetController.create)
 router.get('/planets', planetController.readAll)
+router.get('/planets/:id', planetController.readById)
 
 export  default  router
