@@ -33,10 +33,10 @@ export class  PlanetServiceImpl implements PlanetService{
 
     async update(planet: Planet): Promise<void> {
         const savedPlanet = await this.readById(planet.id)
-        savedPlanet.name =  planet.name !== savedPlanet.name && planet.name !== null ? planet.name : savedPlanet.name
-        savedPlanet.climate = planet.climate !== savedPlanet.climate && planet.name !== null ? planet.climate : savedPlanet.climate
-        savedPlanet.terrain =  planet.terrain !== savedPlanet.terrain && planet.name !== null ? planet.terrain : savedPlanet.terrain
-        savedPlanet.population = planet.population !== savedPlanet.population  && planet.name !== null? planet.population : savedPlanet.population
+        savedPlanet.name =  planet.name !== savedPlanet.name && planet.name !== "" ? planet.name : savedPlanet.name
+        savedPlanet.climate = planet.climate !== savedPlanet.climate && planet.climate !== "" ? planet.climate : savedPlanet.climate
+        savedPlanet.terrain =  planet.terrain !== savedPlanet.terrain && planet.terrain !== "" ? planet.terrain : savedPlanet.terrain
+        savedPlanet.population = planet.population !== savedPlanet.population ? planet.population : savedPlanet.population
         await this.planetRepository.updatePlanet(savedPlanet)
     }
 }
