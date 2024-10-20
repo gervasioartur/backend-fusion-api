@@ -7,7 +7,6 @@ import {
 import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
 import appMock from '@/tests/v1/mocks/app-mock';
-import { pl } from '@faker-js/faker';
 
 describe('PlanetController', () => {
  describe('create planet', () => {
@@ -335,6 +334,25 @@ describe('PlanetController', () => {
       });
 
       expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
+
+    it('Should return 200 on update success', async () => {
+      const planet = planetWithIdFactory();
+      planet.active = undefined;
+      (mockPlanetService.update as jest.Mock).mockResolvedValue(undefined);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: "OK",
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
   })
 });
