@@ -319,6 +319,5 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
     })
   })
-
 });
 

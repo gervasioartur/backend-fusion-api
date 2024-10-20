@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { response, updatePlanetRequest } from '@/v1/api/dtos';
+import { response } from '@/v1/api/dtos';
 import { Planet } from '@/v1/domain/entity/planet';
 import { validationResult } from 'express-validator';
 import { PlanetService } from '@/v1/service/contract/planet.service';
