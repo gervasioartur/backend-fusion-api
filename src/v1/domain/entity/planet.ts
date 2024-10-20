@@ -17,6 +17,9 @@ export class Planet {
     @Column({ type: 'int', nullable: true })
     public population: number;
 
+    @Column({name: 'is_active', type: 'boolean'})
+    public active: boolean | undefined;
+
     constructor(name: string, climate: string, terrain: string, population?: number) {
         this.name = name;
         this.climate = climate;

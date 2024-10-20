@@ -4,6 +4,10 @@ import {Repository} from "typeorm";
 
 export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetRepository {
     async findByName(name: string): Promise<Planet | null> {
-        return this.findOne({ where: {  name } });
+        return await this.findOne({ where: {  name, active: true } });
+    }
+
+    async findAll(): Promise<Planet[]> {
+        return await this.find({where: { active: true }});
     }
 }

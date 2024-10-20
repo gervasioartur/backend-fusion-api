@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
 import { Planet } from '@/v1/domain/entity/planet';
-import { planetFactory } from '../mocks/planet-mocks';
+import { planetsWithNoIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
 
 describe('PlanetRepositoryImpl', () => {
     let dataSource: DataSource
@@ -19,27 +19,47 @@ describe('PlanetRepositoryImpl', () => {
         planetRepository =  new PlanetRepositoryImpl(Planet,dataSource.createEntityManager())
     })
 
-    beforeEach(async () => {
-        await  dataSource.getRepository(Planet).clear()
-    })
-
     afterAll(async () => {
         await dataSource.destroy();
     });
 
-    it('Should return null when planet is not found',async () => {
-        const planet = await planetRepository.findByName(planetFactory.name)
-        expect(planet).toBeNull()
-    });
+    describe('FindByName', () => {
+        beforeEach(async () => {
+            await  dataSource.getRepository(Planet).clear()
+        })
 
-    it('Should save a planet and find it by name', async () => {
-        const planet =  planetFactory
-        await planetRepository.save(planet)
+        it('Should return null when planet is not found',async () => {
+            const planet = await planetRepository.findByName(planetWithNoIdFactory.name)
+            expect(planet).toBeNull()
+        });
 
-        const savedPlanet = await planetRepository.findByName(planet.name)
+        it('Should save a planet and find it by name', async () => {
+            const planet =  planetWithNoIdFactory
+            planet.active =  true
+            await planetRepository.save(planet)
 
-        expect(savedPlanet).toBeDefined()
-        expect(savedPlanet?.name).toBe(planet.name)
-        expect(savedPlanet?.id).toBe(planet.id)
+            const savedPlanet = await planetRepository.findByName(planet.name)
+
+            expect(savedPlanet).toBeDefined()
+            expect(savedPlanet?.name).toBe(planet.name)
+            expect(savedPlanet?.id).toBe(planet.id)
+        })
+    })
+
+    describe('FindAll', () => {
+        beforeEach(async () => {
+            await  dataSource.getRepository(Planet).clear()
+        })
+
+        it('Should save planets and find all', async () => {
+            const toSavePlanets = planetsWithNoIdFactory()
+
+            await planetRepository.save(toSavePlanets[0]);
+            await planetRepository.save(toSavePlanets[1]);
+
+            const planets = await planetRepository.findAll()
+
+            expect(planets).toBeDefined()
+        });
     })
 })

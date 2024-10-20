@@ -30,4 +30,18 @@ export class PlanetController {
       return next(error)
     }
   }
+
+  readAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body = await this.planetService.readAll()
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message, body };
+
+      res.status(status).json(response);
+    }catch (error){
+      return next(error)
+    }
+  }
 }
