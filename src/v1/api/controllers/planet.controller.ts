@@ -59,4 +59,19 @@ export class PlanetController {
         next(error)
       }
   }
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } =  req.params
+    const { name, climate, terrain, population } = req.body;
+
+    try {
+      const planet = new Planet(name, climate, terrain, population);
+      planet.id = id
+
+      await this.planetService.update(planet)
+    }catch (error){
+      next(error)
+    }
+  }
+
 }
