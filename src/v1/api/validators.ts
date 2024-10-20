@@ -9,6 +9,7 @@ export const createPlanetValidator = [
 ];
 
 export const updatePlanetValidator = ({name, climate, terrain, population}: updatePlanetRequest): string | null => {
-  if (name == "") return 'Name is required'
+  if (name === "") return 'Name is required'
+  if (climate === "") return 'Climate is required'
   return null
 }
