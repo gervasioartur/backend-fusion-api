@@ -178,7 +178,7 @@ describe('Planet Service', () => {
             await  expect(promise).rejects.toThrow(new NotFoundError())
         });
 
-        it('Should call update with correct params on update planet', async () => {
+        it('Should call update with correct params and update planet', async () => {
             const toUpdatePlanet = planetWithNoIdFactory
             const savedPlanet = planetWithIdFactory()
             toUpdatePlanet.id = savedPlanet.id
@@ -194,4 +194,5 @@ describe('Planet Service', () => {
             expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
         });
     })
+
 })
