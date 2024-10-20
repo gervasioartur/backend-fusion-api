@@ -57,7 +57,7 @@ describe('Planet Service', () => {
             planetRepository.findByName.mockResolvedValue(null);
         })
 
-        it('Should call findByName with correct values', async () => {
+        it('Should call findByName with correct values on create planet', async () => {
             const params = planetWithNoIdFactory
             const savedPlanet = planetWithIdFromPlanetFactory(params)
 
@@ -68,7 +68,7 @@ describe('Planet Service', () => {
             expect(planetRepository.findByName).toHaveBeenCalledTimes(1)
         })
 
-        it('Should throw ConflictError if the planet is already registered', async () => {
+        it('Should throw ConflictError if the planet is already registered on create planet', async () => {
             const params = planetWithNoIdFactory
             const savedPlanet = planetWithIdFromPlanetFactory(params)
             planetRepository.findByName.mockResolvedValue(savedPlanet);
@@ -77,7 +77,7 @@ describe('Planet Service', () => {
             await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
         })
 
-        it('Should call save with correct values', async () => {
+        it('Should call save with correct values on create value', async () => {
             const params = planetWithNoIdFactory
             const savedPlanet = planetWithIdFromPlanetFactory(params)
 
@@ -88,7 +88,7 @@ describe('Planet Service', () => {
             expect(planetRepository.save).toHaveBeenCalledTimes(1)
         })
 
-        it('Should save planet info', async () => {
+        it('Should save planet info on create planet', async () => {
             const params = planetWithNoIdFactory
             const savedPlanet = planetWithIdFromPlanetFactory(params)
 
@@ -101,7 +101,7 @@ describe('Planet Service', () => {
     })
 
     describe('Read all Planets', () => {
-        it('Should return cached planets if available', async () => {
+        it('Should return cached planets if available on read all planets', async () => {
             const cachedPlanets = JSON.stringify(planetsWithIdFactory());
             (redisClient.get as jest.Mock).mockResolvedValue(cachedPlanets);
 
@@ -112,7 +112,7 @@ describe('Planet Service', () => {
             expect(result).toEqual(JSON.parse(cachedPlanets))
         });
 
-        it('Should return planets from database if cache is empty', async () => {
+        it('Should return planets from database if cache is empty on read all planets', async () => {
             const planets = planetsWithIdFactory();
 
             (redisClient.get as jest.Mock).mockResolvedValue(null);
@@ -181,10 +181,21 @@ describe('Planet Service', () => {
             await  expect(promise).rejects.toThrow(new NotFoundError())
         });
 
+        it('Should throw ConflictError if the planet is already registered', async () => {
+            const planet = planetWithIdFactory()
+
+            planetRepository.findById.mockResolvedValue(planet)
+            planetRepository.findByName.mockResolvedValue(planet)
+
+            const promise = sut.update(planet)
+            await  expect(promise).rejects.toThrow(new ConflictError("Planet is already registered!"))
+        });
+
         it('Should not change planet info if the new information is equal to old info', async () => {
             const planet = planetWithIdFactory()
 
             planetRepository.findById.mockResolvedValue(planet)
+            planetRepository.findByName.mockResolvedValue(null)
             planetRepository.updatePlanet.mockResolvedValue(undefined)
 
             await sut.update(planet)
@@ -201,6 +212,7 @@ describe('Planet Service', () => {
             toUpdatePlanet.id = savedPlanet.id
 
             planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.findByName.mockResolvedValue(null)
             planetRepository.updatePlanet.mockResolvedValue(undefined)
 
             await sut.update(toUpdatePlanet)
@@ -219,6 +231,7 @@ describe('Planet Service', () => {
             savedPlanet.population = toUpdatePlanet.population
 
             planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.findByName.mockResolvedValue(null)
             planetRepository.updatePlanet.mockResolvedValue(undefined)
 
             await sut.update(toUpdatePlanet)
