@@ -245,4 +245,15 @@ describe('Planet Service', () => {
             expect(redisClient.del).toHaveBeenCalledWith('planets')
         });
     })
+
+    describe('Delete planet', () => {
+        it('Should call findById with correct params', async () => {
+            const planet = planetWithIdFactory();
+            planetRepository.findById.mockResolvedValue(planet)
+
+            await sut.delete(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+        });
+    })
 })
