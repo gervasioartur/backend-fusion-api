@@ -38,5 +38,6 @@ export class  PlanetServiceImpl implements PlanetService{
         savedPlanet.terrain =  planet.terrain !== savedPlanet.terrain && planet.terrain !== "" ? planet.terrain : savedPlanet.terrain
         savedPlanet.population = planet.population !== savedPlanet.population ? planet.population : savedPlanet.population
         await this.planetRepository.updatePlanet(savedPlanet)
+        await redisClient.del('planets');
     }
 }
