@@ -21,6 +21,10 @@ export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetR
     }
 
     async deletePlanet(id: string): Promise<void> {
-        return Promise.resolve(undefined);
+       const planet = await this.findById(id)
+        if(planet){
+            planet.active = false
+            await this.updatePlanet(planet)
+        }
     }
 }
