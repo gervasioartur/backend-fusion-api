@@ -4,6 +4,7 @@ import { Planet } from '@/v1/domain/entity/planet';
 import { validationResult } from 'express-validator';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { BusinessError } from '@/v1/domain/errors';
+import { th } from '@faker-js/faker';
 
 export class PlanetController {
   constructor(readonly planetService: PlanetService) {}
@@ -24,6 +25,20 @@ export class PlanetController {
       const status: number = 201;
       const message: string = 'Planet successfully saved!';
       const response: response = { status, message };
+
+      res.status(status).json(response);
+    }catch (error){
+      return next(error)
+    }
+  }
+
+  readAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body = await this.planetService.readAll()
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message, body };
 
       res.status(status).json(response);
     }catch (error){
