@@ -4,4 +4,5 @@ export interface PlanetRepository {
     save(planet: Planet): Promise<Planet | null>
     findByName(name:string): Promise<Planet | null>
     findAll():Promise<Planet[]>
+    findById(id:string): Promise<Planet | null>
 }

@@ -3,6 +3,7 @@ import { Planet } from '@/v1/domain/entity/planet';
 import { ConflictError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import redisClient from '@/v1/config/redis-client';
+import { planetsWithIdFactory, planetWithIdFactory } from '@/tests/v1/mocks/planet-mocks';
 
 
 export class  PlanetServiceImpl implements PlanetService{
@@ -23,5 +24,10 @@ export class  PlanetServiceImpl implements PlanetService{
         const planets = await this.planetRepository.findAll()
         await redisClient.set('planets', JSON.stringify(planets))
         return planets
+    }
+
+    async readById(id: string): Promise<Planet> {
+        await this.planetRepository.findById(id)
+        return Promise.resolve(planetWithIdFactory());
     }
 }
