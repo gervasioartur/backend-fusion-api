@@ -14,7 +14,11 @@
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "npm run test -- ----watchAll",
     "test:staged": "npm run test -- --bail --findRelatedTests ./src",
-    "test:coverage": "npm run test -- --coverage"
+    "test:coverage": "npm run test -- --coverage",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:run": "migration-run.sh",
+    "migration:revert": "migration-revert.sh",
+    "migration:generate": "migration-generate.sh"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@ export const swaggerOptions = {
     openapi: '3.0.0',
     info: {
       title: 'Backend Fusion Api',
-      version: `${process.env.VERSION}`,
+      version: 'v1',
       description: 'API documentation for Backend Fusion Api',
     },
     servers: [{ url: `${process.env.HOST}:${process.env.PORT}/v1/api` }],

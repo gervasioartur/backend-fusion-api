@@ -5,10 +5,12 @@ module.exports = {
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/app.ts',
     '!<rootDir>/src/server.ts',
-    '!<rootDir>/src/**/server.ts',
     '!<rootDir>/src/**/routes.ts',
+    '!<rootDir>/src/**/server.ts',
+    '!<rootDir>/src/**/config/*.ts',
     '!<rootDir>/src/**/data-source.ts',
     '!<rootDir>/src/**/api/factories/*.ts',
+    '!<rootDir>/src/**/persistence/migrations/*.ts',
   ],
   moduleNameMapper: {
     '@/tests/(.+)': '<rootDir>/tests/$1',
