@@ -10,13 +10,7 @@ const paths = {
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                name: { type: 'string' },
-                climate: { type: 'string' },
-                terrain: { type: 'string' },
-                population: { type: 'number' },
-              },
+              $ref: '#/components/schemas/createPlanetRequest',
             },
           },
         },
@@ -25,6 +19,26 @@ const paths = {
         '201': { description: 'Planet created successfully' },
         '400': { description: 'Invalid input' },
         '409': { description: 'Planet already registered' },
+        '500': { description: 'Server error' },
+      },
+    },
+    get: {
+      summary: 'Get a list of all planets',
+      tags: ['Planets'],
+      responses: {
+        '200': {
+          description: 'List of planets returned successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'array',
+                items: {
+                  $ref: '#/components/schemas/Planet',
+                },
+              },
+            },
+          },
+        },
         '500': { description: 'Server error' },
       },
     },
@@ -42,6 +56,18 @@ const components = {
         population: { type: 'number' },
       },
       required: ['name', 'climate', 'terrain'],
+    },
+    Planet: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', format: 'uuid', description: 'Unique identifier for the planet' },
+        name: { type: 'string', description: 'The name of the planet' },
+        climate: { type: 'string', description: 'The climate of the planet' },
+        terrain: { type: 'string', description: 'The terrain of the planet' },
+        population: { type: 'number', description: 'The population of the planet' },
+        active: { type: 'boolean', description: 'Indicates if the planet is active' },
+      },
+      required: ['id', 'name', 'climate', 'terrain'],
     },
   },
 };

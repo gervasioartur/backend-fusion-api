@@ -1,10 +1,9 @@
 import { mock,Mock } from 'ts-jest-mocker';
 import { PlanetRepository } from '@/v1/persistence/repository/contract/planet.repository';
 import { planetWithNoIdFactory, planetsWithIdFactory, planetWithIdFromPlanetFactory } from '../mocks/planet-mocks';
-import { ConflictError, UnexpectedError } from '@/v1/domain/errors';
+import { ConflictError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
-import { param } from 'express-validator';
 import redisClient from '@/v1/config/redis-client';
 
 
@@ -13,6 +12,11 @@ jest.mock('@/v1/config/redis-client');
 describe('Planet Service', () => {
     let sut: PlanetService
     let planetRepository: Mock<PlanetRepository>;
+    let memoryCache: { [key: string]: string } = {};
+
+    beforeEach(() => {
+        memoryCache = {};
+    });
 
     beforeAll(() => {
         planetRepository = mock<PlanetRepository>()
@@ -21,6 +25,21 @@ describe('Planet Service', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        memoryCache = {};
+    });
+
+    (redisClient.get as jest.Mock).mockImplementation((key: string) => {
+        return memoryCache[key] ? Promise.resolve(memoryCache[key]) : Promise.resolve(null);
+    });
+
+    (redisClient.set as jest.Mock).mockImplementation((key: string, value: string) => {
+        memoryCache[key] = value;
+        return Promise.resolve();
+    });
+
+    (redisClient.del as jest.Mock).mockImplementation((key: string) => {
+        delete memoryCache[key];
+        return Promise.resolve();
     });
 
     describe('Create Planet', () => {

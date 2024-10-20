@@ -4,7 +4,6 @@ import { Planet } from '@/v1/domain/entity/planet';
 import { validationResult } from 'express-validator';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { BusinessError } from '@/v1/domain/errors';
-import { th } from '@faker-js/faker';
 
 export class PlanetController {
   constructor(readonly planetService: PlanetService) {}
