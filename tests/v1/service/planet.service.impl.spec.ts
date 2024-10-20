@@ -10,6 +10,7 @@ import { ConflictError, NotFoundError } from '@/v1/domain/errors';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { PlanetServiceImpl } from '@/v1/service/impl/planet.service.impl';
 import redisClient from '@/v1/config/redis-client';
+import { Planet } from '@/v1/domain/entity/planet';
 
 
 jest.mock('@/v1/config/redis-client');
@@ -191,6 +192,39 @@ describe('Planet Service', () => {
             expect(planetRepository.updatePlanet).toHaveBeenCalledWith(planet)
             expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
         });
-    })
 
+        it('Should change planet info if the new information is different to old info', async () => {
+            const toUpdatePlanet = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFactory()
+            toUpdatePlanet.id = savedPlanet.id
+
+            planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.updatePlanet.mockResolvedValue(undefined)
+
+            await sut.update(toUpdatePlanet)
+            expect(planetRepository.findById).toHaveBeenCalledWith(toUpdatePlanet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+
+            expect(planetRepository.updatePlanet).toHaveBeenCalledWith(toUpdatePlanet)
+            expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
+        });
+
+        it('Should not change planet info if the new information is empty', async () => {
+            const toUpdatePlanet =new Planet("","","",0)
+            toUpdatePlanet.active =  true;
+            const savedPlanet = planetWithIdFactory()
+            toUpdatePlanet.id = savedPlanet.id
+            savedPlanet.population = toUpdatePlanet.population
+
+            planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.updatePlanet.mockResolvedValue(undefined)
+
+            await sut.update(toUpdatePlanet)
+            expect(planetRepository.findById).toHaveBeenCalledWith(savedPlanet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+
+            expect(planetRepository.updatePlanet).toHaveBeenCalledWith(savedPlanet)
+            expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
+        });
+    })
 })
