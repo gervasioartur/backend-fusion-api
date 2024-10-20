@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { PlanetRepositoryImpl } from '@/v1/persistence/repository/impl/planet.repository.impl';
 import { Planet } from '@/v1/domain/entity/planet';
-import { planetsWithNoIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
+import { planetsWithNoIdFactory, planetWithIdFactory, planetWithNoIdFactory } from '../mocks/planet-mocks';
 
 describe('PlanetRepositoryImpl', () => {
     let dataSource: DataSource
@@ -60,6 +60,16 @@ describe('PlanetRepositoryImpl', () => {
             const planets = await planetRepository.findAll()
 
             expect(planets).toBeDefined()
+        });
+    })
+
+    describe('FindById', () => {
+        it('Should save planets and find by id', async () => {
+            let toSavePlanet = planetWithNoIdFactory
+            toSavePlanet = await planetRepository.save(toSavePlanet)
+
+            const result = await planetRepository.findById(toSavePlanet.id)
+            expect(result?.id).toBeDefined();
         });
     })
 })
