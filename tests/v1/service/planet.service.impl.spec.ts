@@ -158,7 +158,9 @@ describe('Planet Service', () => {
     describe('Update planet', () => {
         it('Should call findById with correct params on update planet', async () => {
             const planet = planetWithIdFactory()
+
             planetRepository.findById.mockResolvedValue(planet)
+            planetRepository.updatePlanet.mockResolvedValue(undefined)
 
             await sut.update(planet)
             expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
@@ -167,10 +169,29 @@ describe('Planet Service', () => {
 
         it('Should throw NotFoundError if planet does not exist on update planet', async () => {
             const planet = planetWithIdFactory()
+
             planetRepository.findById.mockResolvedValue(null)
+            planetRepository.updatePlanet.mockResolvedValue(undefined)
+
 
             const promise = sut.update(planet)
             await  expect(promise).rejects.toThrow(new NotFoundError())
+        });
+
+        it('Should call update with correct params on update planet', async () => {
+            const toUpdatePlanet = planetWithNoIdFactory
+            const savedPlanet = planetWithIdFactory()
+            toUpdatePlanet.id = savedPlanet.id
+
+            planetRepository.findById.mockResolvedValue(savedPlanet)
+            planetRepository.updatePlanet.mockResolvedValue(undefined)
+
+            await sut.update(toUpdatePlanet)
+            expect(planetRepository.findById).toHaveBeenCalledWith(toUpdatePlanet.id)
+            expect(planetRepository.findById).toHaveBeenCalledTimes(1)
+
+            expect(planetRepository.updatePlanet).toHaveBeenCalledWith(toUpdatePlanet)
+            expect(planetRepository.updatePlanet).toHaveBeenCalledTimes(1)
         });
     })
 })
