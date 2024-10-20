@@ -33,6 +33,7 @@ export class  PlanetServiceImpl implements PlanetService{
 
     async update(planet: Planet): Promise<void> {
         await this.readById(planet.id)
+        await this.planetRepository.updatePlanet(planet)
         return Promise.resolve(undefined);
     }
 }
