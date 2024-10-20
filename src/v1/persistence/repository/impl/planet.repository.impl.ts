@@ -4,6 +4,6 @@ import {Repository} from "typeorm";
 
 export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetRepository {
     async findByName(name: string): Promise<Planet | null> {
-        return this.findOne({ where: {  name } });
+        return this.findOne({ where: {  name, active: true } });
     }
 }

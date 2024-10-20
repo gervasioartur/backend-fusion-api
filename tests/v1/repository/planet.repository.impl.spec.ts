@@ -34,6 +34,7 @@ describe('PlanetRepositoryImpl', () => {
 
     it('Should save a planet and find it by name', async () => {
         const planet =  planetFactory
+        planet.active =  true
         await planetRepository.save(planet)
 
         const savedPlanet = await planetRepository.findByName(planet.name)

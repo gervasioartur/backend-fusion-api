@@ -12,6 +12,7 @@ export class  PlanetServiceImpl implements PlanetService{
     async create(planet: Planet): Promise<void> {
         const savedPlanet  = await this.planetRepository.findByName(planet.name);
         if(savedPlanet != null) throw new ConflictError('Planet is already registered!')
+        planet.active =  true
         await this.planetRepository.save(planet)
         await redisClient.del('planets'); //invalidates the cache
     }
