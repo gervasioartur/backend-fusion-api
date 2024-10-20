@@ -420,6 +420,24 @@ describe('PlanetController', () => {
       expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
       expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
     })
+
+    it('Should return 200 delete success', async () => {
+      const id = 'any_id';
+      (mockPlanetService.delete as jest.Mock).mockResolvedValue(undefined);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: "OK",
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
   })
 });
 
