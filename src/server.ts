@@ -4,6 +4,7 @@ import app from './app';
 import debugLib from 'debug';
 import http from 'http';
 import { dataSource } from './v1/persistence/data-source';
+import redisClient from '@/v1/config/redis-client';
 
 const debug = debugLib('backend-fusion:server');
 
@@ -13,6 +14,11 @@ const debug = debugLib('backend-fusion:server');
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+redisClient.connect().then(() => {
+    console.log('Redis connected successfully');
+}).catch((error) => {
+    console.error('Failed to connect to Redis:', error);
+});
 /**
  * Create HTTP server.
  */

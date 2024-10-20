@@ -1,4 +1,4 @@
-import { createPlanetRequest } from '@/v1/api/dtos';
+import { response } from '@/v1/api/dtos';
 
 const paths = {
   '/planets': {
@@ -43,17 +43,58 @@ const paths = {
       },
     },
   },
+  '/planets/{id}': {
+    get: {
+      summary: 'Get a planet by its ID',
+      tags: ['Planets'],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          schema: {
+            type: 'string',
+            format: 'uuid',
+          },
+          description: 'The ID of the planet to retrieve',
+        },
+      ],
+      responses: {
+        '200': {
+          description: 'Planet returned successfully',
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/Planet',
+              },
+            },
+          },
+        },
+        '404': { description: 'Planet not found' },
+        '500': { description: 'Server error' },
+      },
+    },
+  },
 };
 
 const components = {
   schemas: {
+    response: {
+      type: 'object',
+      properties: {
+        status: { type: 'number' },
+        message: { type: 'string' },
+        body: { type: 'string' },
+      },
+      required: ['name', 'climate', 'terrain'],
+    },
     createPlanetRequest: {
       type: 'object',
       properties: {
-        name: { type: 'string' },
-        climate: { type: 'string' },
-        terrain: { type: 'string' },
-        population: { type: 'number' },
+        name: { type: 'string', description: 'The name of the planet' },
+        climate: { type: 'string', description: 'The climate of the planet' },
+        terrain: { type: 'string', description: 'The terrain of the planet' },
+        population: { type: 'number', description: 'The population of the planet' },
       },
       required: ['name', 'climate', 'terrain'],
     },

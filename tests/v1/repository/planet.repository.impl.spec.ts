@@ -64,6 +64,12 @@ describe('PlanetRepositoryImpl', () => {
     })
 
     describe('FindById', () => {
+        it('Should null if planet does not exist on find by id', async () => {
+            const id = 'any_id'
+            const result = await planetRepository.findById(id)
+            expect(result).toBeNull()
+        });
+
         it('Should save planets and find by id', async () => {
             let toSavePlanet = planetWithNoIdFactory
             toSavePlanet = await planetRepository.save(toSavePlanet)
