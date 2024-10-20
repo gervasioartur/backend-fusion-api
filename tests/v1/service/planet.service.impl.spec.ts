@@ -120,6 +120,7 @@ describe('Planet Service', () => {
     })
 
     describe('Read planet by id', () => {
+
         it('Should call findById with correct params on read planet by id', async () => {
             const id = 'any_id'
             const planet = planetWithIdFactory()
@@ -139,5 +140,15 @@ describe('Planet Service', () => {
             const promise = sut.readById(id)
             await  expect(promise).rejects.toThrow(new NotFoundError())
         })
+
+        it('Should return planet if it exists', async () => {
+            const id = 'any_id'
+            const planet = planetWithIdFactory()
+
+            planetRepository.findById.mockResolvedValue(planet)
+
+            const result = await sut.readById(id)
+            expect(result).toEqual(planet)
+        });
     })
 })
