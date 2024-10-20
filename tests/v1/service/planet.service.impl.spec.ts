@@ -65,8 +65,8 @@ describe('Planet Service', () => {
 
             planetRepository.save.mockResolvedValue(savedPlanet)
 
-            const result = await sut.create(params)
-            expect(result).toBeUndefined()
+            await sut.create(params)
+            expect(redisClient.del).toHaveBeenCalledWith('planets')
         })
     })
 
