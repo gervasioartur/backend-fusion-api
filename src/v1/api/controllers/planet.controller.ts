@@ -48,7 +48,13 @@ export class PlanetController {
   readById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } =  req.params
     try {
-        await this.planetService.readById(id)
+       const body = await this.planetService.readById(id)
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message, body };
+
+      res.status(status).json(response);
       }catch (error){
         next(error)
       }
