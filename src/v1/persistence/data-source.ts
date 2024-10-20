@@ -13,6 +13,6 @@ export const dataSource = new DataSource({
     database: process.env.DB_NAME,
     synchronize: process.env.SYNCHRONIZE === 'true',
     logging: false,
-    entities: [__dirname + "/../domain/entity/*.ts"],
+    entities: [__dirname + "/../domain/entity/*.ts", __dirname + "/../domain/entity/*.js"],
     migrations: [__dirname + "/migrations/*.ts"],
 });
