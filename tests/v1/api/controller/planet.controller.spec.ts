@@ -259,6 +259,28 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
 
+    it('Should return 409 if service throws ConflictError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new ConflictError('Planet is already registered!');
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(409);
+
+      expect(response.body).toEqual({
+        status: 409,
+        message: "ConflictError",
+        body: "Planet is already registered!"
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
+    })
+
     it('Should return 404 if service throws NotFoundError on update', async () => {
       const planet = planetWithIdFactory()
       planet.active = undefined
