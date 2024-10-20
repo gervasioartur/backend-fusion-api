@@ -318,6 +318,24 @@ describe('PlanetController', () => {
 
       expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
     })
+
+    it('Should return 400 if terrain is empty on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.terrain = ""
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        status: 400,
+        message: "BusinessError",
+        body: 'Terrain is required'
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
   })
 });
 
