@@ -44,4 +44,13 @@ export class PlanetController {
       return next(error)
     }
   }
+
+  readById = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } =  req.params
+    try {
+        await this.planetService.readById(id)
+      }catch (error){
+        next(error)
+      }
+  }
 }
