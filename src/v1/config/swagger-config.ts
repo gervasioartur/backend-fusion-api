@@ -102,6 +102,7 @@ const paths = {
       responses: {
         '200': { description: 'Planet returned successfully' },
         '404': { description: 'Planet not found' },
+        '409': { description: 'Planet name already taken' },
         '500': { description: 'Server error' },
       },
     },
