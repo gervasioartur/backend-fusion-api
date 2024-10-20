@@ -7,6 +7,7 @@ import {
 import { ConflictError, NotFoundError, UnexpectedError } from '@/v1/domain/errors';
 import { mockPlanetService } from '@/tests/v1/mocks/routes-mock';
 import appMock from '@/tests/v1/mocks/app-mock';
+import { pl } from '@faker-js/faker';
 
 describe('PlanetController', () => {
  describe('create planet', () => {
@@ -233,6 +234,30 @@ describe('PlanetController', () => {
       });
       expect(mockPlanetService.readById).toHaveBeenCalledWith(planet.id);
       expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('update planet', () => {
+    it('Should return 500 if service throws UnexpectError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
   })
 });
