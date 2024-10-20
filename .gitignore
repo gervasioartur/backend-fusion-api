@@ -4,3 +4,5 @@ node_modules
 dist
 *.iml
 backend-fusion.iml
+.env
+coverage

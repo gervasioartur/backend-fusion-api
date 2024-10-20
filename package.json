@@ -1,59 +1,93 @@
 {
-  "name": "backend-fusion",
+  "name": "backend-fusion-api",
   "version": "1.0.0",
   "description": "Backend API that allows the creation, management, and visualization of a galaxy inspired by Star Wars, including planets, star systems, characters, and spaceships.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint 'src/**/*.ts'",
+    "lint": "eslint '*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
-    "start": "node dist/server.js",
-    "dev": "npm run build && npm start",
+    "build": "npm run clean && babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
+    "postbuild": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "start": "npm run build && node dist/server.js",
+    "dev": "ts-node -r tsconfig-paths/register src/server.ts",
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:watch": "npm run test -- ----watchAll",
     "test:staged": "npm run test -- --bail --findRelatedTests ./src",
-    "test:coverage": "npm run test -- --coverage"
+    "test:coverage": "npm run test -- --coverage",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:run": "migration-run.sh",
+    "migration:revert": "migration-revert.sh",
+    "migration:generate": "migration-generate.sh"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gervasioartur/backend-fusion.git"
+    "url": "https://github.com/gervasioartur/backend-fusion-api.git"
   },
   "author": "Gervasio Artur",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gervasioartur/backend-fusion/issues"
+    "url": "https://github.com/gervasioartur/backend-fusion-api/issues"
   },
-  "homepage": "https://github.com/gervasioartur/backend-fusion#readme",
+  "homepage": "https://github.com/gervasioartur/backend-fusion-api#readme",
   "devDependencies": {
+    "@babel/cli": "^7.25.7",
+    "@babel/core": "^7.25.8",
+    "@babel/node": "^7.25.7",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.25.7",
+    "@babel/preset-env": "^7.25.8",
+    "@babel/preset-typescript": "^7.25.7",
+    "@faker-js/faker": "^9.0.3",
     "@types/cookie-parser": "^1.4.7",
     "@types/debug": "^4.1.12",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/morgan": "^1.9.9",
+    "@types/node": "^22.7.6",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^8.9.0",
     "@typescript-eslint/parser": "^8.9.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.12.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-define-config": "^2.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.6",
     "jest": "^29.7.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.3"
   },
+  "ts-node": "^10.9.2",
+  "typescript": "^5.6.3",
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^4.21.1",
+    "express-async-errors": "^3.1.1",
+    "express-validator": "^7.2.0",
     "http": "^0.0.1-security",
     "morgan": "^1.10.0",
+    "pg": "^8.13.0",
+    "reflect-metadata": "^0.2.2",
     "rimraf": "^6.0.1",
-    "ts-debug": "^1.3.0"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "ts-debug": "^1.3.0",
+    "ts-jest-mocker": "^1.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typeorm": "^0.3.20"
   },
   "lint-staged": {
-    "src/**/*.ts": [
+    "*.ts": [
       "eslint --fix",
       "prettier --write"
     ]

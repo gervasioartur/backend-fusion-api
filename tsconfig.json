@@ -9,14 +9,16 @@
     "module": "commonjs",
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@/*": [ "*" ],
-      "@/tests/*": [ "../tests/*" ],
+      "@/*": ["*"],
+      "@/tests/*": ["../tests/*"]
     },
   },
-  "include": ["src",  "tests"]
+  "include": ["src", "tests"],
 }
