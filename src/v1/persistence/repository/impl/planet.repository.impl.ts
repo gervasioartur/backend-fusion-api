@@ -15,4 +15,8 @@ export  class PlanetRepositoryImpl extends Repository<Planet> implements PlanetR
         const planet = await this.findOne({where: {id,  active: true }});
         return planet ? planet : null
     }
+
+    async updatePlanet(planet: Planet): Promise<void> {
+        await this.save(planet)
+    }
 }

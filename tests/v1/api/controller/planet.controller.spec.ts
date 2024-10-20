@@ -34,7 +34,7 @@ describe('PlanetController', () => {
    it('should return 409 if service throws ConflictError on create planet', async () => {
      const requestParams = createPlanetRequestFactory();
 
-     (mockPlanetService.create as jest.Mock).mockRejectedValue(new ConflictError('Planet is already registered!'));
+     (mockPlanetService.create as jest.Mock).mockRejectedValue(new ConflictError('Planet name already taken'));
 
      const response = await request(appMock)
        .post('/v1/api/planets')
@@ -44,7 +44,7 @@ describe('PlanetController', () => {
      expect(response.body).toEqual({
        status: 409,
        message: "ConflictError",
-       body: "Planet is already registered!"
+       body: "Planet name already taken"
      });
      expect(mockPlanetService.create).toHaveBeenCalledTimes(1)
    });
@@ -233,6 +233,148 @@ describe('PlanetController', () => {
       });
       expect(mockPlanetService.readById).toHaveBeenCalledWith(planet.id);
       expect(mockPlanetService.readById).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('update planet', () => {
+    it('Should return 500 if service throws UnexpectError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
+    })
+
+    it('Should return 409 if service throws ConflictError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new ConflictError('Planet is already registered!');
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(409);
+
+      expect(response.body).toEqual({
+        status: 409,
+        message: "ConflictError",
+        body: "Planet is already registered!"
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
+    })
+
+    it('Should return 404 if service throws NotFoundError on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.active = undefined
+      const error = new NotFoundError();
+
+      (mockPlanetService.update as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(404);
+
+      expect(response.body).toEqual({
+        status: 404,
+        message: "NotFoundError",
+        body: error.message
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
+    })
+
+
+    it('Should return 400 if name is empty on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.name = ""
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        status: 400,
+        message: "BusinessError",
+        body: 'Name is required'
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
+
+    it('Should return 400 if climate is empty on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.climate = ""
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        status: 400,
+        message: "BusinessError",
+        body: 'Climate is required'
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
+
+    it('Should return 400 if terrain is empty on update', async () => {
+      const planet = planetWithIdFactory()
+      planet.terrain = ""
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(400);
+
+      expect(response.body).toEqual({
+        status: 400,
+        message: "BusinessError",
+        body: 'Terrain is required'
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(0)
+    })
+
+    it('Should return 200 on update success', async () => {
+      const planet = planetWithIdFactory();
+      planet.active = undefined;
+      (mockPlanetService.update as jest.Mock).mockResolvedValue(undefined);
+
+      const response = await request(appMock)
+        .put('/v1/api/planets/'+planet.id)
+        .send(planet)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        status: 200,
+        message: "OK",
+      });
+
+      expect(mockPlanetService.update).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
   })
 });

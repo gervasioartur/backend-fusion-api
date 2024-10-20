@@ -9,5 +9,6 @@ const planetController = makePlanetController()
 router.post('/planets',createPlanetValidator, planetController.create)
 router.get('/planets', planetController.readAll)
 router.get('/planets/:id', planetController.readById)
+router.put('/planets/:id', planetController.update)
 
 export  default  router

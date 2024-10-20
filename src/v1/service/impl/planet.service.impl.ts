@@ -30,4 +30,19 @@ export class  PlanetServiceImpl implements PlanetService{
         if (!planet) throw new NotFoundError()
         return planet
     }
+
+    async update(planet: Planet): Promise<void> {
+        const savedPlanet = await this.readById(planet.id)
+        const isValidName =  await this.planetRepository.findByName(savedPlanet.name)
+
+        if(isValidName != null) throw new ConflictError('Planet name already taken')
+
+        savedPlanet.name =  planet.name !== savedPlanet.name && planet.name !== "" ? planet.name : savedPlanet.name
+        savedPlanet.climate = planet.climate !== savedPlanet.climate && planet.climate !== "" ? planet.climate : savedPlanet.climate
+        savedPlanet.terrain =  planet.terrain !== savedPlanet.terrain && planet.terrain !== "" ? planet.terrain : savedPlanet.terrain
+        savedPlanet.population = planet.population !== savedPlanet.population ? planet.population : savedPlanet.population
+
+        await this.planetRepository.updatePlanet(savedPlanet)
+        await redisClient.del('planets');
+    }
 }

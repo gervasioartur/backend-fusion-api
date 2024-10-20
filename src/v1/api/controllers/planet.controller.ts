@@ -4,6 +4,7 @@ import { Planet } from '@/v1/domain/entity/planet';
 import { validationResult } from 'express-validator';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { BusinessError } from '@/v1/domain/errors';
+import { updatePlanetValidator } from '@/v1/api/validators';
 
 export class PlanetController {
   constructor(readonly planetService: PlanetService) {}
@@ -58,5 +59,28 @@ export class PlanetController {
       }catch (error){
         next(error)
       }
+  }
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } =  req.params
+    const { name, climate, terrain, population } = req.body;
+
+    const errorMessage = updatePlanetValidator({name,climate,terrain,population})
+    if (errorMessage) return next(new BusinessError(errorMessage as string))
+
+    try {
+      const planet = new Planet(name, climate, terrain, population);
+      planet.id = id
+
+      await this.planetService.update(planet)
+
+      const status: number = 200;
+      const message: string = 'OK';
+      const response: response = { status, message };
+
+      res.status(status).json(response);
+    }catch (error){
+      next(error)
+    }
   }
 }
