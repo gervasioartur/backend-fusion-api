@@ -377,5 +377,28 @@ describe('PlanetController', () => {
       expect(mockPlanetService.update).toHaveBeenCalledWith(planet)
     })
   })
+
+  describe('delete planet', () => {
+    it('Should return 500 if service throws UnexpectError on delete', async () => {
+      const id = 'any_id'
+      const error = new UnexpectedError('An unexpected error occurred while trying save planet info.');
+
+      (mockPlanetService.delete as jest.Mock).mockRejectedValue(error);
+
+      const response = await request(appMock)
+        .delete('/v1/api/planets/'+id)
+        .send()
+        .expect(500);
+
+      expect(response.body).toEqual({
+        status: 500,
+        message: "UnexpectedError",
+        body: "An unexpected error occurred while trying save planet info."
+      });
+
+      expect(mockPlanetService.delete).toHaveBeenCalledTimes(1)
+      expect(mockPlanetService.delete).toHaveBeenCalledWith(id)
+    })
+  })
 });
 
