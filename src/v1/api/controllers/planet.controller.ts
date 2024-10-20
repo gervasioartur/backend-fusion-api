@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { response } from '@/v1/api/dtos';
+import { response, updatePlanetRequest } from '@/v1/api/dtos';
 import { Planet } from '@/v1/domain/entity/planet';
 import { validationResult } from 'express-validator';
 import { PlanetService } from '@/v1/service/contract/planet.service';
 import { BusinessError } from '@/v1/domain/errors';
+import { updatePlanetValidator } from '@/v1/api/validators';
 
 export class PlanetController {
   constructor(readonly planetService: PlanetService) {}
@@ -63,6 +64,9 @@ export class PlanetController {
   update = async (req: Request, res: Response, next: NextFunction) => {
     const { id } =  req.params
     const { name, climate, terrain, population } = req.body;
+
+    const errorMessage = updatePlanetValidator({name,climate,terrain,population})
+    if (errorMessage) return next(new BusinessError(errorMessage as string))
 
     try {
       const planet = new Planet(name, climate, terrain, population);
