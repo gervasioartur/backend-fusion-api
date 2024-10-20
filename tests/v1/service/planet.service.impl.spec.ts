@@ -164,5 +164,13 @@ describe('Planet Service', () => {
             expect(planetRepository.findById).toHaveBeenCalledWith(planet.id)
             expect(planetRepository.findById).toHaveBeenCalledTimes(1)
         });
+
+        it('Should throw NotFoundError if planet does not exist on update planet', async () => {
+            const planet = planetWithIdFactory()
+            planetRepository.findById.mockResolvedValue(null)
+
+            const promise = sut.update(planet)
+            await  expect(promise).rejects.toThrow(new NotFoundError())
+        });
     })
 })
