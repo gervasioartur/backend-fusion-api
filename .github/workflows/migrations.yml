@@ -1,33 +1,33 @@
 name: "DATABASE MIGRATION"
 on:
   workflow_dispatch:
-    input:
+    inputs:
       api-version:
         description: "Informe a versão da API"
         required: true
         type: string
 
 jobs:
-run-migrations:
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      node-version: [20.17.0]
-
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Download Config env file
-      run: curl -o .env ${{ vars.CONFIG_ENV_URL }}
-
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Install dependencies
-      run: npm install --only=production
-
-    - name: Run migrations
-      run: npm run migration:run ${{inputs.api-version }}
+  run-migrations:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.17.0]
+  
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Download Config env file
+        run: curl -o .env ${{ vars.CONFIG_ENV_URL }}
+  
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+  
+      - name: Install dependencies
+        run: npm install --only=production
+  
+      - name: Run migrations
+        run: npm run migration:run ${{inputs.api-version }}
