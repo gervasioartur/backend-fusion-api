@@ -204,7 +204,7 @@ resource "local_file" "env_file" {
 
 # Upload the .env file to S3
 resource "aws_s3_object" "env_file_upload" {
-  bucket = aws_s3_bucket.bucket.bucket # Reference to the S3 bucket created above
-  key    = "configs/.env"              # Path where the file will be stored in S3
+  bucket = aws_s3_bucket.bucket.bucket   # Reference to the S3 bucket created above
+  key    = "configs/.env"                # Path where the file will be stored in S3
   source = local_file.env_file.filename  # Path to the local .env file
 }
