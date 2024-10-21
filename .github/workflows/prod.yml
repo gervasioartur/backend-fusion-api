@@ -23,12 +23,10 @@ jobs:
           run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
 
         - name: Build Docker image
-          run: |
-            docker build -t "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG" .
+          run: docker build -t "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG" .
 
         - name: Push Docker image
-          run: |
-            docker push "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG"
+          run: docker push "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG"
 
   deploy:
     runs-on: ubuntu-latest
@@ -38,8 +36,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Download Terraform Outputs Artifact
-        run: |
-          curl -o terraform-outputs.json ${{ vars.TERRAFORM_OUTUTS_JSON }}
+        run: curl -o terraform-outputs.json ${{ vars.TERRAFORM_OUTUTS_JSON }}
 
       - name: Extract Values from JSON
         id: extract
@@ -53,22 +50,18 @@ jobs:
           echo "EC2_HOSTNAME=$ec2_hostname" >> $GITHUB_ENV
           echo "SSH_PRIVATE_KEY_URL=$ssh_private_key_url" >> $GITHUB_ENV
           echo "DB_HOST=$db_host" >> $GITHUB_ENV
+     
       - name: Download SSH Key from S3
-        run: |
-          echo "$SSH_PRIVATE_KEY_URL"
-          curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
+        run: curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
       
       - name: Set permissions for the SSH key
-        run: |
-          ls
-          chmod 600 deployer.pem
+        run: chmod 600 deployer.pem
     
       - name: Create SSH directory
         run: mkdir -p ~/.ssh
 
       - name: Add EC2 Host to known_hosts
-        run: |
-          ssh-keyscan -H "$EC2_HOSTNAME" >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H "$EC2_HOSTNAME" >> ~/.ssh/known_hosts
     
       - name: Set IMAGE_TAG
         id: set_tag
