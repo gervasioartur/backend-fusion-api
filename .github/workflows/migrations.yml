@@ -30,4 +30,4 @@ jobs:
         run: npm install --only=production
   
       - name: Run migrations
-        run: npm run migration:run ${{inputs.api-version }}
+        run: npm run typeorm migration:run -- -d "src/${{inputs.api-version }}/persistence/data-source.ts"
