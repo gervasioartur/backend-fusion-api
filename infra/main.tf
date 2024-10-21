@@ -194,7 +194,7 @@ resource "local_file" "env_file" {
     DB_USERNAME=${var.database_username} # Database username
     DB_PASSWORD=${var.database_password} # Database password
     DB_NAME=${var.database_name}     # Database name
-    SYNCHRONIZE=${var.synchronize} # Synchronization flag
+    SYNCHRONIZE=false # Synchronization flag
     REDIS_HOST=localhost    # Redis host
     REDIS_PORT=6379     # Redis port
   EOT
