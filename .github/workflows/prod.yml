@@ -101,7 +101,8 @@ jobs:
 
             # Run Redis container
             echo "Starting Redis container..."
-            docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} -p 6379:6379 redis:6.0
+            docker run -d -p 6379:6379 redis:6.0
+            # docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} -p 6379:6379 redis:6.0
 
             # Pull the application image
             echo "Pulling application image"
