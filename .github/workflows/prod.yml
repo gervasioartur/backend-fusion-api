@@ -108,5 +108,5 @@ jobs:
 
           # Run the application container
             echo "Running application container"
-            docker run --env-file .env -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
+            docker run --env-file $GITHUB_WORKSPACE/.env -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
           EOF
