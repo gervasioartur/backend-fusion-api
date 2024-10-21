@@ -55,6 +55,7 @@ jobs:
           echo "DB_HOST=$db_host" >> $GITHUB_ENV
       - name: Download SSH Key from S3
         run: |
+          echo "$SSH_PRIVATE_KEY_URL"
           curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
       
       - name: Set permissions for the SSH key
