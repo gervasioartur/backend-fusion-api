@@ -3,7 +3,17 @@ resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
 }
 
-# Applying public access policy
+# Resource to disable public policy blocking on the S3 bucket
+resource "aws_s3_bucket_public_access_block" "block_public_access" {
+  bucket = aws_s3_bucket.bucket.id
+
+  block_public_acls       = false    # Allows public ACLs
+  block_public_policy     = false    # Disables block on public bucket policies
+  ignore_public_acls      = false    # Does not ignore public ACLs
+  restrict_public_buckets = false    # Disables restriction on public buckets
+}
+
+# Resource to apply a public access policy to the S3 bucket
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.bucket.id
 
@@ -12,23 +22,16 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
     Statement = [
       {
         Effect = "Allow"
-        Principal = "*"
-        Action = "s3:GetObject"
-        Resource = "${aws_s3_bucket.bucket.arn}/*"
+        Principal = "*"            # Allows access to any user
+        Action = "s3:GetObject"     # Grants permission to read objects
+        Resource = "${aws_s3_bucket.bucket.arn}/*"   # Applies the policy to all objects in the bucket
       }
     ]
   })
+
+  # Ensures that public access block is removed before applying the bucket policy
+  depends_on = [aws_s3_bucket_public_access_block.block_public_access]
 }
-
-resource "aws_s3_bucket_public_access_block" "block_public_access" {
-  bucket = aws_s3_bucket.bucket.id
-
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
 
 # Security group to allow access to RDS
 resource "aws_security_group" "rds_sg" {
