@@ -25,6 +25,20 @@ jobs:
             # Set the extracted values as environment variables
             echo "DB_HOST=$db_host" >> $GITHUB_ENV
 
+        - name: Create .env file
+          run: |
+            echo "Creating .env file with environment variables"
+            echo "PORT=${{ vars.PORT }}" >> .env
+            echo "HOST=${{ vars.HOST }}" >> .env
+            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
+            echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
+            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
+            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
+            echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
+            echo "SYNCHRONIZE=${{ vars.SYNCHRONIZE }}" >> .env
+            echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
+            echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
+
         - name: Log in to Docker Hub
           uses: docker/login-action@v2
           with:
@@ -37,7 +51,7 @@ jobs:
 
         - name: Build Docker image
           run: |
-            docker build --build-arg PORT=${{ vars.PORT }} --build-arg HOST=${{ vars.HOST }} --build-arg DB_HOST=$DB_HOST --build-arg DB_PORT=${{ vars.DB_PORT }} --build-arg DB_USERNAME=${{ vars.DB_USERNAME }}  --build-arg DB_PASSWORD=${{ vars.DB_PASSWORD }} --build-arg DB_NAME=${{ vars.DB_NAME }} --build-arg SYNCHRONIZE=${{ vars.SYNCHRONIZE }} --build-arg REDIS_HOST=${{ vars.REDIS_HOST }} --build-arg REDIS_PORT=6379 -t "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG" .
+            docker build -t "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG" .
 
         - name: Push Docker image
           run: |
@@ -94,7 +108,7 @@ jobs:
 
             # Run Redis container
             echo "Starting Redis container..."
-            docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} -p 6379:6379 redis:6.0
+            docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} -p "${{ vars.REDIS_PORT }}:${{ vars.REDIS_PORT }}" redis:6.0
 
             # Pull the application image
             echo "Pulling application image"
