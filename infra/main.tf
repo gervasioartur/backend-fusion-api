@@ -188,7 +188,7 @@ resource "aws_s3_object" "terraform_outputs" {
 resource "local_file" "env_file" {
   content = <<-EOT
     PORT=8080
-    HOST=${aws_instance.docker_instance.public_dns}
+    HOST=localhost
     DB_HOST=${aws_db_instance.postgres.address}
     DB_PORT=5432
     DB_USERNAME=${var.database_username}
