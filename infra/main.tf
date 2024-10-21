@@ -29,6 +29,7 @@ resource "aws_s3_bucket_public_access_block" "block_public_access" {
   restrict_public_buckets = false
 }
 
+
 # Security group to allow access to RDS
 resource "aws_security_group" "rds_sg" {
   name = "rds_sg"
