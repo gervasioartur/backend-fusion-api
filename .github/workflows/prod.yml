@@ -19,7 +19,6 @@ jobs:
         - name: Extract Values from JSON
           id: extract
           run: |
-            ls
             # Use jq to extract the values from the JSON file
             db_host=$(jq -r '.db_host' terraform-outputs.json)
 
@@ -34,15 +33,8 @@ jobs:
       
         - name: Set IMAGE_TAG
           id: set_tag
-          run: |
-            if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-              echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
-            elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
-              echo "IMAGE_TAG=${{ github.event.release.tag }}" >> $GITHUB_ENV
-            else
-              echo "IMAGE_TAG=latest" >> $GITHUB_ENV # Default value if not on main or develop
-            fi
-
+          run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+          
         - name: Build Docker image
           run: |
             docker build --build-arg PORT=${{ vars.PORT }} --build-arg HOST=${{ vars.HOST }} --build-arg DB_HOST=$DB_HOST --build-arg DB_PORT=${{ vars.DB_PORT }} --build-arg DB_USERNAME=${{ vars.DB_USERNAME }}  --build-arg DB_PASSWORD=${{ vars.DB_PASSWORD }} --build-arg DB_NAME=${{ vars.DB_NAME }} --build-arg SYNCHRONIZE=${{ vars.SYNCHRONIZE }} --build-arg REDIS_HOST=${{ vars.REDIS_HOST }} --build-arg REDIS_PORT=6379 -t "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:$IMAGE_TAG" .
