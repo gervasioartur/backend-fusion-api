@@ -36,10 +36,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Download Config env
-        run: |
-          curl -o .env ${{ vars.CONFIG_ENV_URL }}
       
       - name: Download Terraform Outputs Artifact
         run: |
@@ -83,6 +79,16 @@ jobs:
         run: |
           ssh -i deployer.pem -o StrictHostKeyChecking=no -t "ec2-user@$EC2_HOSTNAME" << 'EOF'
             sudo yum update -y
+            
+            # Check if .env exists and remove it if it does
+            if [ -f .env ]; then
+              echo "Removing existing .env file"
+              rm .env
+            fi
+
+            # Download the new .env file
+            curl -o .env ${{ vars.CONFIG_ENV_URL }}
+
             echo "${{ vars.DOCKER_PASSWORD }}" | docker login -u "${{ vars.DOCKER_USERNAME }}" --password-stdin
           
             docker stop $(docker ps -q)
