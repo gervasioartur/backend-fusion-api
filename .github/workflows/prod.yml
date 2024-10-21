@@ -25,20 +25,6 @@ jobs:
             # Set the extracted values as environment variables
             echo "DB_HOST=$db_host" >> $GITHUB_ENV
 
-        - name: Create .env file
-          run: |
-            echo "Creating .env file with environment variables"
-            echo "PORT=${{ vars.PORT }}" >> .env
-            echo "HOST=${{ vars.HOST }}" >> .env
-            echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
-            echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
-            echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
-            echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
-            echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
-            echo "SYNCHRONIZE=${{ vars.SYNCHRONIZE }}" >> .env
-            echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
-            echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
-
         - name: Log in to Docker Hub
           uses: docker/login-action@v2
           with:
@@ -79,6 +65,20 @@ jobs:
           echo "EC2_HOSTNAME=$ec2_hostname" >> $GITHUB_ENV
           echo "SSH_PRIVATE_KEY_URL=$ssh_private_key_url" >> $GITHUB_ENV
     
+      - name: Create .env file
+        run: |
+          echo "Creating .env file with environment variables"
+          echo "PORT=${{ vars.PORT }}" >> .env
+          echo "HOST=${{ vars.HOST }}" >> .env
+          echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
+          echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
+          echo "SYNCHRONIZE=${{ vars.SYNCHRONIZE }}" >> .env
+          echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
+          echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
+
       - name: Download SSH Key from S3
         run: |
           curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
@@ -116,5 +116,5 @@ jobs:
 
           # Run the application container
             echo "Running application container"
-            docker run -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
+            docker run --env-file .env -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
           EOF
