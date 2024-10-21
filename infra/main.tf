@@ -178,9 +178,9 @@ resource "local_file" "outputs_text" {
 }
 
 
-# Upload outputs to S3
+# Upload outputs.txt to S3
 resource "aws_s3_object" "terraform_outputs" {
   bucket = aws_s3_bucket.bucket.bucket
   key    = "terraform-outputs/${var.environment}_terraform_outputs.txt"
-  source = local_file.outputs_json.filename
+  source = local_file.outputs_text.filename  # Ensure this points to the .txt file
 }
