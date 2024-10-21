@@ -7,4 +7,3 @@
 ````
     npm run migration:run `api version`
 ````
-
