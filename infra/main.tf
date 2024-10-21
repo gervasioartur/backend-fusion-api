@@ -165,21 +165,22 @@ resource "aws_instance" "docker_instance" {
   }
 }
 
-# Generate JSON file for outputs
-resource "local_file" "outputs_json" {
-  content = jsonencode({
+# Generate text file for outputs with semicolon-separated values
+resource "local_file" "outputs_text" {
+  content = templatefile("${path.module}/outputs_template.txt", {
     db_host              = aws_db_instance.postgres.address
     instance_public_ip   = aws_instance.docker_instance.public_ip
     ssh_private_key_url  = "https://${aws_s3_bucket.bucket.bucket}.s3.amazonaws.com/${aws_s3_object.ssh_private_key.key}"
     ssh_public_key       = "https://${aws_s3_bucket.bucket.bucket}.s3.amazonaws.com/${aws_s3_object.ssh_public_key.key}"
     ec2_hostname         = aws_instance.docker_instance.public_dns
   })
-  filename = "${path.module}/infra/${var.environment}_terraform_outputs.json"
+  filename = "${path.module}/infra/${var.environment}_terraform_outputs.txt"
 }
+
 
 # Upload outputs to S3
 resource "aws_s3_object" "terraform_outputs" {
   bucket = aws_s3_bucket.bucket.bucket
-  key    = "terraform-outputs/${var.environment}_terraform_outputs.json"
+  key    = "terraform-outputs/${var.environment}_terraform_outputs.txt"
   source = local_file.outputs_json.filename
 }
