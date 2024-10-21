@@ -12,19 +12,6 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v4
         
-        - name: Download Terraform Outputs Artifact
-          run: |
-            curl -o terraform-outputs.json ${{ vars.TERRAFORM_OUTUTS_JSON }}
-
-        - name: Extract Values from JSON
-          id: extract
-          run: |
-            # Use jq to extract the values from the JSON file
-            db_host=$(jq -r '.db_host' terraform-outputs.json)
-
-            # Set the extracted values as environment variables
-            echo "DB_HOST=$db_host" >> $GITHUB_ENV
-
         - name: Log in to Docker Hub
           uses: docker/login-action@v2
           with:
@@ -60,17 +47,19 @@ jobs:
           # Use jq to extract the values from the JSON file
           ec2_hostname=$(jq -r '.ec2_hostname' terraform-outputs.json)
           ssh_private_key_url=$(jq -r '.ssh_private_key_url' terraform-outputs.json)
+          db_host=$(jq -r '.db_host' terraform-outputs.json)
 
           # Set the extracted values as environment variables
           echo "EC2_HOSTNAME=$ec2_hostname" >> $GITHUB_ENV
           echo "SSH_PRIVATE_KEY_URL=$ssh_private_key_url" >> $GITHUB_ENV
-    
+          echo "DB_HOST=$db_host" >> $GITHUB_ENV
+
       - name: Create .env file
         run: |
           echo "Creating .env file with environment variables"
           echo "PORT=${{ vars.PORT }}" >> .env
           echo "HOST=${{ vars.HOST }}" >> .env
-          echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
+          echo "DB_HOST=$DB_HOST >> .env
           echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
           echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ vars.DB_PASSWORD }}" >> .env
@@ -78,6 +67,7 @@ jobs:
           echo "SYNCHRONIZE=${{ vars.SYNCHRONIZE }}" >> .env
           echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
           echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
+          ls
 
       - name: Download SSH Key from S3
         run: |
