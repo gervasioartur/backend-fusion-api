@@ -187,16 +187,16 @@ resource "aws_s3_object" "terraform_outputs" {
 # Generate .env file locally
 resource "local_file" "env_file" {
   content = <<-EOT
-    PORT=8080 # Environment variable for port
+    PORT=8080                                       # Environment variable for port
     HOST=${aws_instance.docker_instance.public_dns} # Environment variable for host
     DB_HOST=${aws_db_instance.postgres.address}     # Database host
-    DB_PORT=5432    # Database port
-    DB_USERNAME=${var.database_username} # Database username
-    DB_PASSWORD=${var.database_password} # Database password
-    DB_NAME=${var.database_name}     # Database name
-    SYNCHRONIZE=false # Synchronization flag
-    REDIS_HOST=localhost    # Redis host
-    REDIS_PORT=6379     # Redis port
+    DB_PORT=5432                                    # Database port
+    DB_USERNAME=${var.database_username}            # Database username
+    DB_PASSWORD=${var.database_password}            # Database password
+    DB_NAME=${var.database_name}                    # Database name
+    SYNCHRONIZE=false                               # Synchronization flag
+    REDIS_HOST=localhost                            # Redis host
+    REDIS_PORT=6379                                 # Redis port
   EOT
 
   filename = "${path.module}/infra/.env"
