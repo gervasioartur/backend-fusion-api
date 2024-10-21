@@ -25,6 +25,8 @@ jobs:
             # Set the extracted values as environment variables
             echo "DB_HOST=$db_host" >> $GITHUB_ENV
 
+            ls
+
         - name: Log in to Docker Hub
           uses: docker/login-action@v2
           with:
