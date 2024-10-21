@@ -165,8 +165,25 @@ resource "aws_instance" "docker_instance" {
   }
 }
 
+
+# Removes old files
+resource "null_resource" "remove_outputs_json" {
+  provisioner "local-exec" {
+    command = "rm -f ${path.module}/infra/${var.environment}_terraform_outputs.json"
+  }
+}
+
+resource "null_resource" "remove_env_file" {
+  provisioner "local-exec" {
+    command = "rm -f ${path.module}/infra/.env"
+  }
+}
+
+
 # Generate JSON file for outputs
 resource "local_file" "outputs_json" {
+  depends_on = [null_resource.remove_outputs_json]
+
   content = jsonencode({
     db_host              = aws_db_instance.postgres.address
     instance_public_ip   = aws_instance.docker_instance.public_ip
@@ -186,6 +203,8 @@ resource "aws_s3_object" "terraform_outputs" {
 
 # Generate .env file locally
 resource "local_file" "env_file" {
+  depends_on = [null_resource.remove_env_file]
+
   content = <<-EOT
     PORT=8080
     HOST=localhost
