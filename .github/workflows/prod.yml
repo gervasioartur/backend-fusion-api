@@ -68,9 +68,11 @@ jobs:
           echo "REDIS_HOST=${{ vars.REDIS_HOST }}" >> .env
           echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
 
+      - name: List files for debugging
+        run: ls -la
+
       - name: Download SSH Key from S3
         run: |
-          ls
           curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
       
       - name: Set permissions for the SSH key
