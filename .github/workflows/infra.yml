@@ -1,0 +1,34 @@
+name: "DEPLOY INFRA"
+on:
+  workflow_dispatch:
+    inputs:
+      is-to-destroy:
+        description: "Defina se deseja destruir a infraestrutura"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      is-to-destroy: "${{ inputs.is-to-destroy }}"
+      environment: prod
+      aws-assume-role-arn: "${{ vars.AWS_ASSUME_ROLE_ARN }}"
+      aws-region: "sa-east-1"
+      aws-statefile-s3-bucket: "${{ vars.AWS_STATEFILE_S3_BUCKET }}"
+      aws-lock-dynamodb-table: "${{ vars.AWS_LOCK_DYNAMODB_TABLE }}"
+      bucket_name: "${{ vars.BUCKET_NAME }}"
+      database_name: "${{ vars.DB_NAME }}"
+      database_password: "${{ vars.DB_PASSWORD }}"
+      database_username: "${{ vars.DB_USERNAME }}"
+      database_instance_name: "${{ vars.DATABASE_INSTANCE_NAME }}"
+      deployer_key_name: "${{ vars.DEPLOYER_KEY_NAME }}"
+      server_instance_name: "${{ vars.SERVER_INSTANCE_NAME }}"

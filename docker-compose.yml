@@ -22,6 +22,34 @@ services:
     networks:
       - backend-fusion-network
 
+  backend-fusion-api:
+    build:
+      dockerfile: Dockerfile
+    container_name: backend-fusion-api
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    depends_on:
+      - backend-fusion-database
+      - backend-fusion-cache
+    environment:
+      ## SERVER CONFIG
+      - PORT=8080
+      - HOST=http://localhost
+      ## DATABASE CONFIGURATION
+      - DB_HOST=backend-fusion-database
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - SYNCHRONIZE=false
+      # CONFIGURING CACHE
+      - REDIS_HOST=backend-fusion-cache
+      - REDIS_PORT=6379
+    networks:
+      - backend-fusion-network
+
 volumes:
   backend-fusion-dbdata:
 
