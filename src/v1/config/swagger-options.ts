@@ -13,6 +13,7 @@ export const swaggerOptions = {
       version: 'v1',
       description: 'API documentation for Backend Fusion Api',
     },
+    servers: [{ url: `http://${process.env.HOST}:${process.env.PORT}/v1/api` }],
     paths,
     components
   },

@@ -53,10 +53,6 @@ jobs:
           echo "EC2_HOSTNAME=$ec2_hostname" >> $GITHUB_ENV
           echo "SSH_PRIVATE_KEY_URL=$ssh_private_key_url" >> $GITHUB_ENV
           echo "DB_HOST=$db_host" >> $GITHUB_ENV
-
-      - name: List files for debugging
-        run: ls -la
-
       - name: Download SSH Key from S3
         run: |
           curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"

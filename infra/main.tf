@@ -207,7 +207,7 @@ resource "local_file" "env_file" {
 
   content = <<-EOT
     PORT=8080
-    HOST=localhost
+    HOST=${aws_db_instance.postgres.address}
     DB_HOST=${aws_db_instance.postgres.address}
     DB_PORT=5432
     DB_USERNAME=${var.database_username}
