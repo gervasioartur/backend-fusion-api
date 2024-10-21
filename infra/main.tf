@@ -20,6 +20,15 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   })
 }
 
+resource "aws_s3_bucket_public_access_block" "block_public_access" {
+  bucket = aws_s3_bucket.bucket.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 
 # Security group to allow access to RDS
 resource "aws_security_group" "rds_sg" {
