@@ -165,7 +165,6 @@ resource "aws_instance" "docker_instance" {
   }
 }
 
-
 # Removes old files
 resource "null_resource" "remove_outputs_json" {
   provisioner "local-exec" {
