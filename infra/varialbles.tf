@@ -2,6 +2,7 @@ variable "environment" {
    type = string
 }
 
+
 # Bucket variables
 variable "bucket_name" {
    type = string
