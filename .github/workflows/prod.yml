@@ -86,9 +86,9 @@ jobs:
             docker stop $(docker ps -q)
             docker rm $(docker ps -aq)
 
-            # Create a Docker network
-            echo "Creating Docker network 'app_network'..."
-            docker network create app_network
+            # Create a Docker network only if it doesn't exist
+            echo "Creating Docker network 'app_network' if not exists..."
+            docker network inspect app_network >/dev/null 2>&1 || docker network create app_network
 
             # Run Redis container
             echo "Starting Redis container..."
