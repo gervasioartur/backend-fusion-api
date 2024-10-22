@@ -60,12 +60,6 @@ jobs:
       - name: Create SSH directory
         run: mkdir -p ~/.ssh
 
-      - name: cat key
-        run: cat deployer.pem
-
-      - name: verify key
-        run: ssh-keygen -lf deployer.pem
-
       - name: Add EC2 Host to known_hosts
         run: ssh-keyscan -H "$EC2_HOSTNAME" >> ~/.ssh/known_hosts
     
