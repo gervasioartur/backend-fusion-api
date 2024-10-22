@@ -18,10 +18,10 @@ export class  PlanetServiceImpl implements PlanetService{
     }
 
     async readAll(): Promise<Planet[]> {
-        // const cashedPlanets = await redisClient.get('planets')
-        // if(cashedPlanets) return JSON.parse(cashedPlanets)
+        const cashedPlanets = await redisClient.get('planets')
+        if(cashedPlanets) return JSON.parse(cashedPlanets)
         const planets = await this.planetRepository.findAll()
-        // await redisClient.set('planets', JSON.stringify(planets))
+        await redisClient.set('planets', JSON.stringify(planets))
         return planets
     }
 

@@ -213,7 +213,7 @@ resource "local_file" "env_file" {
     DB_PASSWORD=${var.database_password}
     DB_NAME=${var.database_name}
     SYNCHRONIZE=false
-    REDIS_HOST=localhost
+    REDIS_HOST=backend-fusion-api-cache
     REDIS_PORT=6379
   EOT
 
