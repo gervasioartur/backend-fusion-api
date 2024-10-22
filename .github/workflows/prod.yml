@@ -86,9 +86,13 @@ jobs:
             docker stop $(docker ps -q)
             docker rm $(docker ps -aq)
 
+            # Create a Docker network
+            echo "Creating Docker network 'app_network'..."
+            docker network create app_network
+
             # Run Redis container
             echo "Starting Redis container..."
-            docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} -p "${{ vars.REDIS_PORT }}:${{ vars.REDIS_PORT }}" redis:6.0
+            docker run -d --name ${{ vars.REDIS_CONTAINER_NAME }} --network app_network -p "${{ vars.REDIS_PORT }}:${{ vars.REDIS_PORT }}" redis:6.0
 
             # Pull the application image
             echo "Pulling application image"
@@ -96,5 +100,5 @@ jobs:
 
           # Run the application container
             echo "Running application container"
-            docker run --env-file .env -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
+            docker run --env-file .env --network app_network -p 8080:8080 -d --name ${{ vars.APPLICATION_NAME }} "${{ vars.DOCKER_USERNAME }}/${{ vars.APPLICATION_NAME }}:${{ env.IMAGE_TAG }}"
           EOF
