@@ -55,7 +55,7 @@ jobs:
         run: curl -o deployer.pem "$SSH_PRIVATE_KEY_URL"
       
       - name: Set permissions for the SSH key
-        run: chmod 600 deployer.pem
+        run: chmod 400 deployer.pem
     
       - name: Create SSH directory
         run: mkdir -p ~/.ssh
