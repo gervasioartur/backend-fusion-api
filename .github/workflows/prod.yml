@@ -58,19 +58,17 @@ jobs:
         run: chmod 400 deployer.pem
     
       - name: Create SSH directory
-        run: |
-          ssh-keygen -lf deployer.pem
-          cat deployer.pem
-          mkdir -p ~/.ssh
+        run: mkdir -p ~/.ssh
+
+      - name: verify key
+        run: ssh-keygen -lf deployer.pem
 
       - name: Add EC2 Host to known_hosts
         run: ssh-keyscan -H "$EC2_HOSTNAME" >> ~/.ssh/known_hosts
     
       - name: Set IMAGE_TAG
         id: set_tag
-        run: |
-          ssh -i deployer.pem -o StrictHostKeyChecking=no "ec2-user@$EC2_HOSTNAME" << 'EOF'
-          echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
+        run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_ENV
 
       - name: Deploy to EC2
         run: |
