@@ -60,6 +60,9 @@ jobs:
       - name: Create SSH directory
         run: mkdir -p ~/.ssh
 
+      - name: cat key
+        run: cat deployer.pem
+
       - name: verify key
         run: ssh-keygen -lf deployer.pem
 
