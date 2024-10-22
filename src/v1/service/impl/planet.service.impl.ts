@@ -33,7 +33,7 @@ export class  PlanetServiceImpl implements PlanetService{
 
     async update(planet: Planet): Promise<void> {
         const savedPlanet = await this.readById(planet.id)
-        const isValidName =  await this.planetRepository.findByName(savedPlanet.name)
+        const isValidName =  await this.planetRepository.findByName(planet.name)
 
         if(isValidName != null) throw new ConflictError('Planet name already taken')
 
